@@ -31,7 +31,7 @@
 	Using different SND controller (POX, OpenDaylight).
 
 --> Kubernetes
-	Getting started with Minikube.
+	Getting started with Minikube. 
 	Watching online courses.
 	--> EDX Kubernetes Course
 	Getting a bit familiar with containers.
