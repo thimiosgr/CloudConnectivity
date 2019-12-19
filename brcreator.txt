@@ -1,0 +1,18 @@
+import commands
+import os
+import subprocess
+
+
+print '\nDeleting old bridge...\n'
+os.system('sudo ovs-vsctl del-br br-int')
+
+print '\nCreating new bridge...\n'
+os.system('sudo ovs-vsctl add-br br-int')
+
+os.system('sudo ip link add veth0 type veth peer name veth1')
+os.system('sudo ovs-vsctl add-port br-int veth1')
+
+ifc = raw_input('Enter interface name: ')
+os.system('sudo brctl addif %s veth0' %ifc)
+os.system('sudo ip link set veth1 up')
+os.system('sudo ip link set veth0 up')
