@@ -7,7 +7,7 @@ print '\nDeleting old bridge...\n'
 os.system('sudo ovs-vsctl del-br br-int')
 
 print '\nCreating new bridge...\n'
-os.system('sudo ovs-vsctl add-br br-int')
+os.system('sudo ovs-vsctl add-br br-int') 
 
 os.system('sudo ip link add veth0 type veth peer name veth1')
 os.system('sudo ovs-vsctl add-port br-int veth1')
