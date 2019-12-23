@@ -4,4 +4,4 @@ This is a thesis of an undergraduate student studying at the University of Patra
 
 The purpose of the thesis is to provide L2 connectivity between two or more cloud using pure software virtual switches and/or an SDN controller. Switches are based on OpenVSwitch, a proven solution for implementing software-based data planes. Goal is to package OVS in a way that can implement the gateway role for multiple data paths that may serve different purposes in each cloud, and provide the control hooks to add/edit/delete data flows and tuning their performance. Second part focuses on orchestrating the solution and automating the workflows for dynamic management, as well as performance testing using different configurations.
 
-![](https://lh3.googleusercontent.com/Ss1_lCeTQaBkoZf7BL38eu826SWC2tOa8HFMsVOkK9MY8MY-nD51X9pwOluz3YOvV-nvNC0=s170)
+![](https://lh3.googleusercontent.com/y6O9KSil1oeHInECyiUwvIzHLqbeHrRl0jQHWOGxWT9G0AneON3P1ne1fdNE-qo2dQJVGYM=s170)
