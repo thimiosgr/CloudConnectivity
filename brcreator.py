@@ -36,5 +36,5 @@ while qu == 'Y':
         print("This bridge already exists. Give another name please.\n")
     else:
         os.system("sudo ovs-vsctl add-br %s" %newbridge) 
-        print("\nBridge \'%s\' was created!" %newbridge)
+        print("\nBridge \'%s\' was created!" %newbridge) 
         break
