@@ -14,4 +14,4 @@ print 'Installing Ifconfig...'
 os.system('docker exec -it %s apt-get install net-tools' %conname)
 
 print 'Installing ping...'
-os.system('docker exec -it %s apt-get install iputils-ping -y' %conname)
+os.system('docker exec -it %s apt-get install iputils-ping -y' %conname) 
