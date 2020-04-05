@@ -1,0 +1,44 @@
+{
+  "builders": [
+    {
+      "type": "openstack",
+      "ssh_username": "ubuntu",
+      "identity_endpoint": "http://150.140.186.115/identity",
+      "image_name": "packerimage",
+      "source_image": "e9ad70c4-438e-483b-bff7-931b2181bad6",
+      "flavor": "m1.heat_int",
+      "networks": [
+        "3e42296e-cdbf-4099-a4c4-3ea4df87535c"
+      ],
+      "use_floating_ip": true,
+      "floating_ip_pool": "public"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "/opt/stack/packerprojects/imagescript.sh",
+      "destination": "/home/ubuntu/imagescript.sh"
+    },
+    {
+      "type": "file",
+      "source": "/opt/stack/packerprojects/connectivity.service",
+      "destination": "/home/ubuntu/connectivity.service"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sleep 5",
+        "sudo mv imagescript.sh /usr/local/bin > /dev/null 2>&1",
+        "sudo chmod 755 /usr/local/bin/imagescript.sh > /dev/null 2>&1",
+        "sudo mv connectivity.service /etc/systemd/system > /dev/null 2>&1",
+        "sudo chmod 664 /etc/systemd/system/connectivity.service > /dev/null 2>&1",
+        "sudo systemctl daemon-reload > /dev/null 2>&1",
+        "sudo systemctl enable connectivity.service > /dev/null 2>&1",
+        "sudo apt update > /dev/null 2>&1",
+        "sudo apt install openvswitch-switch -y > /dev/null 2>&1",
+        "sudo apt install openvpn -y > /dev/null 2>&1"
+      ]
+    }
+  ]
+}
