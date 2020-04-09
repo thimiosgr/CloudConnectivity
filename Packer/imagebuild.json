@@ -17,12 +17,12 @@
   "provisioners": [
     {
       "type": "file",
-      "source": "/opt/stack/packerprojects/bootscript.sh",
+      "source": "/opt/stack/packerprojects/CloudConnectivity/Packer/bootscript.sh",
       "destination": "/home/ubuntu/bootscript.sh"
     },
     {
       "type": "file",
-      "source": "/opt/stack/packerprojects/connectivity.service",
+      "source": "/opt/stack/packerprojects/CloudConnectivity/Packer/connectivity.service",
       "destination": "/home/ubuntu/connectivity.service"
     },
     {
@@ -42,4 +42,3 @@
     }
   ]
 }
-
