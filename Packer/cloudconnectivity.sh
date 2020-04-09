@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Give permissions to the JSON and Service file.
 sudo chmod 666 imagebuild.json connectivity.service
 
 PARAMS=""
@@ -67,6 +68,7 @@ else
     echo  "Package moreutils is already instaled. Not installing."
 fi
 
+# Regular expression to check if IP's given by user are correct.
 IP_RE="^(([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])+$"
 
 if ! [[ ${OPENSTACK_IP} =~ ${IP_RE} ]]; then
