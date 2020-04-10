@@ -36,7 +36,8 @@ while (( "$#" )); do
       ;;
     -*|--*=) # unsupported flags
       echo "Error: Unsupported flag $1" >&2
-      exit 1
+      COUNTER=1
+      break
       ;;
     *) # preserve positional arguments
       PARAMS="${PARAMS} $1"
@@ -49,14 +50,16 @@ done
 eval set -- "${PARAMS}"
 
 if ! [[ -z ${COUNTER} ]]; then
-  echo "This is a script that provides Layer 2 connectivity between instances of two different Openstack clouds. Options:"
-  printf "\t\033[0;33m-oi\033[0m or -\033[0;33mopip\033[0m : The IP of the machine that runs the Openstack cloud.\n"
-  printf "\t\033[0;33m-vi\033[0m or -\033[0;33mvpnip\033[0m : The IP of the machine that runs the OpenVPN server.\n"
-  printf "\t\033[0;33m-i\033[0m or -\033[0;33mimage\033[0m : The name of the image that will be used as source for the new image.\n"
-  printf "\t\033[0;33m-n\033[0m or \033[0;33m-network\033[0m : The name of the network on which the test server will be connected to.\n"
-  printf "\t\033[0;33m-p\033[0m or \033[0;33m-password\033[0m: The password of the Openstack cloud.\n"
-  printf "\t\033[0;33m-f\033[0m or \033[0;33m-filename\033[0m : The name of the VPN files that every instance must fetch.\n"
-  printf "\t\033[0;33m-h\033[0m or \033[0;33m-help\033[0m : Shows all the available script options.\n"
+  echo "This is a script that provides Layer 2 connectivity between instances of two different Openstack clouds."
+  echo "You have to copy the file with the Openstack credentials in the CloudConnectivity/Cloudconnectivity folder and name it admin-openrc.sh."
+  echo "The user options are:"
+  printf "\t\033[0;33m-oi\033[0m, -\033[0;33mopip\033[0m     :  The IP of the machine that runs the Openstack cloud.\n"
+  printf "\t\033[0;33m-vi\033[0m, -\033[0;33mvpnip\033[0m    :  The IP of the machine that runs the OpenVPN server.\n"
+  printf "\t\033[0;33m-i\033[0m, -\033[0;33mimage\033[0m     :  The name of the image that will be used as source for the new image.\n"
+  printf "\t\033[0;33m-n\033[0m, \033[0;33m-network\033[0m   :  The name of the network on which the test server will be connected to.\n"
+  printf "\t\033[0;33m-p\033[0m, \033[0;33m-password\033[0m  :  The password of the Openstack cloud.\n"
+  printf "\t\033[0;33m-f\033[0m, \033[0;33m-filename\033[0m  :  The name of the VPN files that every instance must fetch.\n"
+  printf "\t\033[0;33m-h\033[0m, \033[0;33m-help\033[0m      :  Shows all the available script options.\n"
   exit 1
 fi
 
