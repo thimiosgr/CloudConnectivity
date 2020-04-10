@@ -6,23 +6,27 @@ sudo chmod 666 imagebuild.json connectivity.service
 PARAMS=""
 while (( "$#" )); do
   case "$1" in
-    -opip)
+    -oi | -opip)
       OPENSTACK_IP=$2
       shift 2
       ;;
-    -vpnip)
+    -vi | -vpnip)
       VPN_IP=$2 
       shift 2
       ;;
-    -image)
+    -i | -image)
       IMAGE_NAME=$2
       shift 2
       ;;
-    -network)
+    -n | -network)
       NETWORK_NAME=$2
       shift 2
       ;;
-    -help)
+    -p | -password)
+      PASSWD=$2
+      shift 2
+      ;;
+    -h | -help)
       COUNTER=1
       break
       ;;
@@ -41,14 +45,18 @@ done
 eval set -- "${PARAMS}"
 
 if ! [[ -z $COUNTER ]]; then
-  echo "Script options:"
-  echo "  -opip : The IP of the machine that runs the Openstack cloud."
-  echo "  -vpnip : The IP of the machine that runs the OpenVPN server."
-  echo "  -image : The name of the image that will be used as source for the new image."
-  echo "  -network : The name of the network on which the test server will be connected to."
-  echo "  -help : Show all tha available script options."
+  echo "This is a script that provides Layer 2 connecitivity between instances of two different Openstack clouds."
+  echo "Options:"
+  printf "  \033[0;33m-oi\033[0m or -\033[0;33mopip\033[0m : The IP of the machine that runs the Openstack cloud."
+  printf "  \033[0;33m-vi\033[0m or -\033[0;33mvpnip\033[0m : The IP of the machine that runs the OpenVPN server."
+  printf "  \033[0;33m-i\033[0m or -\033[0;33mimage\033[0m : The name of the image that will be used as source for the new image."
+  printf "  \033[0;33m-n\033[0m or \033[0;33m-network\033[0m : The name of the network on which the test server will be connected to."
+  printf "  \033[0;33m-p\033[0m or \033[0;33m-password\033[0m: The password of the Openstack cloud."
+  printf "  \033[0;33m-h\033[0m or \033[0;33m-help\033[0m : Show all tha available script options."
   exit 1
 fi
+
+source admin-openrc.sh $PASSWD
 
 # Checking if command-line JSON processor jq is installed.
 if ! dpkg -s jq >/dev/null 2>&1; then
@@ -81,9 +89,11 @@ if ! [[ ${VPN_IP} =~ ${IP_RE} ]]; then
   exit 1
 fi
 
+# Converting image and network names to ID's, so they can be passed to Packer JSON file.
 IMAGE_ID=$(openstack image list | grep ${IMAGE_NAME} | awk '{print $2}' -)
 NETWORK_ID=$(openstack network list | grep ${NETWORK_NAME} | awk '{print $2}' -)
 
+# Checking if the image and network given by user are correct.
 if [[ -z "${IMAGE_ID}" ]]; then
   printf "\033[0;31mThe image name you provided is not correct.\033[0m\n"
   exit 1
@@ -94,6 +104,7 @@ if [[ -z "${NETWORK_ID}" ]]; then
   exit 1
 fi
 
+# Modifying the Packer JSON file according to the user's preferences.
 IDENTITY="http://${OPENSTACK_IP}/identity"
 jq --arg v "${IDENTITY}" '.builders[].identity_endpoint = $v' imagebuild.json|sponge imagebuild.json
 jq --arg v "${IMAGE_ID}" '.builders[].source_image = $v' imagebuild.json|sponge imagebuild.json
