@@ -116,6 +116,7 @@ jq --arg v "$BOOT_SCRIPT" '.provisioners[0].source = $v' imagebuild.json|sponge 
 SERVICE="${THE_PATH}/connectivity.service"
 jq --arg v "$SERVICE" '.provisioners[1].source = $v' imagebuild.json|sponge imagebuild.json
 
+# Edit the boot script of the new image, providing it with the IP of the VPN server.
 sed -i '5s/.*/VPN_IP='"$VPN_IP"'/' bootscript.sh
 
 echo "Building image... This might take some minutes, depending on your hardware and your Internet connection."
