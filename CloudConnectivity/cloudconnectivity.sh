@@ -45,14 +45,13 @@ done
 eval set -- "${PARAMS}"
 
 if ! [[ -z $COUNTER ]]; then
-  echo "This is a script that provides Layer 2 connecitivity between instances of two different Openstack clouds."
-  echo "Options:"
-  printf "  \033[0;33m-oi\033[0m or -\033[0;33mopip\033[0m : The IP of the machine that runs the Openstack cloud."
-  printf "  \033[0;33m-vi\033[0m or -\033[0;33mvpnip\033[0m : The IP of the machine that runs the OpenVPN server."
-  printf "  \033[0;33m-i\033[0m or -\033[0;33mimage\033[0m : The name of the image that will be used as source for the new image."
-  printf "  \033[0;33m-n\033[0m or \033[0;33m-network\033[0m : The name of the network on which the test server will be connected to."
-  printf "  \033[0;33m-p\033[0m or \033[0;33m-password\033[0m: The password of the Openstack cloud."
-  printf "  \033[0;33m-h\033[0m or \033[0;33m-help\033[0m : Show all tha available script options."
+  echo "This is a script that provides Layer 2 connecitivity between instances of two different Openstack clouds. Options:"
+  printf "\t\033[0;33m-oi\033[0m or -\033[0;33mopip\033[0m : The IP of the machine that runs the Openstack cloud.\n"
+  printf "\t\033[0;33m-vi\033[0m or -\033[0;33mvpnip\033[0m : The IP of the machine that runs the OpenVPN server.\n"
+  printf "\t\033[0;33m-i\033[0m or -\033[0;33mimage\033[0m : The name of the image that will be used as source for the new image.\n"
+  printf "\t\033[0;33m-n\033[0m or \033[0;33m-network\033[0m : The name of the network on which the test server will be connected to.\n"
+  printf "\t\033[0;33m-p\033[0m or \033[0;33m-password\033[0m: The password of the Openstack cloud.\n"
+  printf "\t\033[0;33m-h\033[0m or \033[0;33m-help\033[0m : Show all tha available script options.\n"
   exit 1
 fi
 
