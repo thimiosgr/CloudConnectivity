@@ -123,7 +123,7 @@ jq --arg v "${SERVICE}" '.provisioners[1].source = $v' imagebuild.json|sponge im
 
 # Edit the boot script of the new image, providing it with the IP of the VPN server and the username that it will use to fetch the VPN files.
 sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' bootscript.sh
-sed -i '5s/.*/USERNAME='"${FILENAME}"'/' bootscript.sh
+sed -i '6s/.*/USERNAME='"${FILENAME}"'/' bootscript.sh
 
 echo "Building image... This might take some minutes, depending on your hardware and your Internet connection."
 packer build imagebuild.json > /dev/null 2>&1
