@@ -26,6 +26,10 @@ while (( "$#" )); do
       PASSWD=$2
       shift 2
       ;;
+    -f | -filename)
+      FILENAME=$2
+      shift 2
+      ;;
     -h | -help)
       COUNTER=1
       break
@@ -44,18 +48,19 @@ done
 # set positional arguments in their proper place
 eval set -- "${PARAMS}"
 
-if ! [[ -z $COUNTER ]]; then
+if ! [[ -z ${COUNTER} ]]; then
   echo "This is a script that provides Layer 2 connectivity between instances of two different Openstack clouds. Options:"
   printf "\t\033[0;33m-oi\033[0m or -\033[0;33mopip\033[0m : The IP of the machine that runs the Openstack cloud.\n"
   printf "\t\033[0;33m-vi\033[0m or -\033[0;33mvpnip\033[0m : The IP of the machine that runs the OpenVPN server.\n"
   printf "\t\033[0;33m-i\033[0m or -\033[0;33mimage\033[0m : The name of the image that will be used as source for the new image.\n"
   printf "\t\033[0;33m-n\033[0m or \033[0;33m-network\033[0m : The name of the network on which the test server will be connected to.\n"
   printf "\t\033[0;33m-p\033[0m or \033[0;33m-password\033[0m: The password of the Openstack cloud.\n"
+  printf "\t\033[0;33m-f\033[0m or \033[0;33m-filename\033[0m : The name of the VPN files that every instance must fetch.\n"
   printf "\t\033[0;33m-h\033[0m or \033[0;33m-help\033[0m : Shows all the available script options.\n"
   exit 1
 fi
 
-source admin-openrc.sh $PASSWD
+source admin-openrc.sh ${PASSWD}
 
 # Checking if command-line JSON processor jq is installed.
 if ! dpkg -s jq >/dev/null 2>&1; then
@@ -111,13 +116,14 @@ jq --arg v "${NETWORK_ID}" '.builders[].networks[] = $v' imagebuild.json|sponge 
 
 THE_PATH=$('pwd')
 BOOT_SCRIPT="${THE_PATH}/bootscript.sh"
-jq --arg v "$BOOT_SCRIPT" '.provisioners[0].source = $v' imagebuild.json|sponge imagebuild.json
+jq --arg v "${BOOT_SCRIPT}" '.provisioners[0].source = $v' imagebuild.json|sponge imagebuild.json
 
 SERVICE="${THE_PATH}/connectivity.service"
-jq --arg v "$SERVICE" '.provisioners[1].source = $v' imagebuild.json|sponge imagebuild.json
+jq --arg v "${SERVICE}" '.provisioners[1].source = $v' imagebuild.json|sponge imagebuild.json
 
-# Edit the boot script of the new image, providing it with the IP of the VPN server.
-sed -i '5s/.*/VPN_IP='"$VPN_IP"'/' bootscript.sh
+# Edit the boot script of the new image, providing it with the IP of the VPN server and the username that it will use to fetch the VPN files.
+sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' bootscript.sh
+sed -i '5s/.*/USERNAME='"${FILENAME}"'/' bootscript.sh
 
 echo "Building image... This might take some minutes, depending on your hardware and your Internet connection."
 packer build imagebuild.json > /dev/null 2>&1
