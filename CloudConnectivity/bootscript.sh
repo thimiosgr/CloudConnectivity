@@ -20,7 +20,8 @@ fi
 PEER_IP=$(head -n1 /home/ubuntu/${USERNAME}/where.txt)
 TUNNEL_IP=$(head -n2 /home/ubuntu/${USERNAME}/where.txt | tail -1)
 
-sleep 5
+sleep 3
+# OpenvSwitch configuration
 sudo ovs-vsctl add-br br0
 sudo ovs-vsctl add-port br0 vxlan0 -- set interface vxlan0 type=vxlan options:remote_ip=${PEER_IP}
 sudo ovs-vsctl add-port br0 vi0 -- set interface vi0 type=internal
