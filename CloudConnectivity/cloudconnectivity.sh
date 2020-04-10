@@ -135,3 +135,4 @@ printf "\033[0;32mCreated image: packerimage.\n\033[0mRun 'openstack image list'
 printf "\nCreating server for testing...\n"
 openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/user-data.txt --network ${NETWORK_ID} testingserver
 printf "\n\033[0;32mCreated server 'testingserver'.\033[0m\nRun 'openstack server list' for confirmation.\n"
+

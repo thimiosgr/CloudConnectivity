@@ -29,5 +29,3 @@ sudo ifconfig vi0 ${TUNNEL_IP}/24 up
 
 echo "Establishing VPN connection..."
 sudo openvpn /home/ubuntu/${USERNAME}/${USERNAME}.ovpn
-
-

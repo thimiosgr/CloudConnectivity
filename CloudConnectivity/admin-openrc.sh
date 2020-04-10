@@ -5,7 +5,7 @@
 # access to - such as Compute, Image Service, Identity, Object Storage, Block
 # Storage, and Networking (code-named nova, glance, keystone, swift,
 # cinder, and neutron).
-#
+##
 # *NOTE*: Using the 3 *Identity API* does not necessarily mean any other
 # OpenStack API is version 3. For example, your cloud provider may implement
 # Image API v1.1, Block Storage API v2, and Compute API v2.0. OS_AUTH_URL is
