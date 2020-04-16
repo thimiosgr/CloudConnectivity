@@ -63,7 +63,21 @@ if ! [[ -z ${COUNTER} ]]; then
   exit 1
 fi
 
-source admin-openrc.sh ${PASSWD}
+HOST_IP=$(ifconfig | grep "150.140.186.115" | awk '{print $2}' -)
+if [[ $HOST_IP == "150.140.186.115"]]; then
+  source openstack1.sh
+else 
+  source openstack2.sh
+fi
+
+# Checking if Packer is installed.
+if ! dpkg -s packer >/dev/null 2>&1; then
+    echo "Installing Packer."
+    sudo apt-get install jq -y
+    printf "\033[0;32mInstalled Packer.\033[0m\n"
+else
+    echo "Packer is already installed. Not installing."
+fi
 
 # Checking if command-line JSON processor jq is installed.
 if ! dpkg -s jq >/dev/null 2>&1; then
