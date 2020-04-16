@@ -34,6 +34,15 @@ while (( "$#" )); do
       COUNTER=1
       break
       ;;
+    -auto)
+      HOST_IP=$(ifconfig | grep "150.140.186.127" | awk '{print $2}' -)
+      if [[ $HOST_IP == "150.140.186.115" ]]; then
+        source openstack1.sh
+      else 
+        source openstack2.sh
+      fi
+      break
+      ;;
     -*|--*=) # unsupported flags
       echo "Error: Unsupported flag $1" >&2
       COUNTER=1
@@ -63,24 +72,17 @@ if ! [[ -z ${COUNTER} ]]; then
   exit 1
 fi
 
-HOST_IP=$(ifconfig | grep "150.140.186.127" | awk '{print $2}' -)
-if [[ $HOST_IP == "150.140.186.115" ]]; then
-  source openstack1.sh
-else 
-  source openstack2.sh
-fi
-
 # Checking if Packer is installed.
-if packer version 2>&1 | wc -l > 1; then
-    echo "Installing Packer."
-    export VER="1.5.5"
-    wget https://releases.hashicorp.com/packer/${VER}/packer_${VER}_linux_amd64.zip
-    unzip packer_${VER}_linux_amd64.zip
-    sudo mv packer /usr/local/bin
-    printf "\033[0;32mInstalled Packer.\033[0m\n"
-else
-    echo "Packer is already installed. Not installing."
-fi
+# if packer version 2>&1 | wc -l > 1; then
+#     echo "Installing Packer."
+#     export VER="1.5.5"
+#     wget https://releases.hashicorp.com/packer/${VER}/packer_${VER}_linux_amd64.zip
+#     unzip packer_${VER}_linux_amd64.zip
+#     sudo mv packer /usr/local/bin
+#     printf "\033[0;32mInstalled Packer.\033[0m\n"
+# else
+#     echo "Packer is already installed. Not installing."
+# fi
 
 # Checking if command-line JSON processor jq is installed.
 if ! dpkg -s jq >/dev/null 2>&1; then
