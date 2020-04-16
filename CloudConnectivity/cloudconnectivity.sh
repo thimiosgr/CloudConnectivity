@@ -56,7 +56,7 @@ if [[ -z "$VPN_IP" ]]; then
   exit 1
 fi
 
-if [[ -z "$IMAGE" ]]; then
+if [[ -z "$IMAGE_NAME" ]]; then
   printf "\033[0;31mYou have not provided an IMAGE name. Use -i or -image to provide one.\033[0m\n"
   exit 1
 fi
