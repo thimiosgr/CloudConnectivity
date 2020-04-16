@@ -66,7 +66,7 @@ if [[ -z "$NETWORK_NAME" ]]; then
   exit 1
 fi
 
-if [[ -z "$PASSWORD" ]]; then
+if [[ -z "$PASSWD" ]]; then
   printf "\033[0;31mYou have not provided a PASSWORD for authentication. Use -p or -password to provide one.\033[0m\n"
   exit 1
 fi
