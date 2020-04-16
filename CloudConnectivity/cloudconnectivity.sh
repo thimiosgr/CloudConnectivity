@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Give permissions to the JSON and Service file.
-chmod 666 imagebuild.json connectivity.service
+sudo chmod 666 imagebuild.json connectivity.service
 
 PARAMS=""
 while (( "$#" )); do
@@ -34,10 +34,6 @@ while (( "$#" )); do
       COUNTER=1
       break
       ;;
-    -auto)
-      source openstack2.sh
-      break
-      ;;
     -*|--*=) # unsupported flags
       echo "Error: Unsupported flag $1" >&2
       COUNTER=1
@@ -67,17 +63,7 @@ if ! [[ -z ${COUNTER} ]]; then
   exit 1
 fi
 
-# Checking if Packer is installed.
-# if packer version 2>&1 | wc -l > 1; then
-#     echo "Installing Packer."
-#     export VER="1.5.5"
-#     wget https://releases.hashicorp.com/packer/${VER}/packer_${VER}_linux_amd64.zip
-#     unzip packer_${VER}_linux_amd64.zip
-#     sudo mv packer /usr/local/bin
-#     printf "\033[0;32mInstalled Packer.\033[0m\n"
-# else
-#     echo "Packer is already installed. Not installing."
-# fi
+source admin-openrc.sh ${PASSWD}
 
 # Checking if command-line JSON processor jq is installed.
 if ! dpkg -s jq >/dev/null 2>&1; then
@@ -149,4 +135,3 @@ printf "\033[0;32mCreated image: packerimage.\n\033[0mRun 'openstack image list'
 printf "\nCreating server for testing...\n"
 openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/user-data.txt --network ${NETWORK_ID} testingserver
 printf "\n\033[0;32mCreated server 'testingserver'.\033[0m\nRun 'openstack server list' for confirmation.\n"
-
