@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Give permissions to the JSON and Service file.
-sudo chmod 666 imagebuild.json connectivity.service
+chmod 666 imagebuild.json connectivity.service
 
 PARAMS=""
 while (( "$#" )); do
