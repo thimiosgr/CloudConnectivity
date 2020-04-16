@@ -71,9 +71,13 @@ else
 fi
 
 # Checking if Packer is installed.
-if ! dpkg -s packer >/dev/null 2>&1; then
+if packer version 2>&1 | wc -l > 1; then
     echo "Installing Packer."
+    export VER="1.5.1"
+    wget https://releases.hashicorp.com/packer/${VER}/packer_${VER}_linux_amd64.zip
     sudo apt-get install jq -y
+    unzip packer_${VER}_linux_amd64.zip
+    sudo mv packer /usr/local/bin
     printf "\033[0;32mInstalled Packer.\033[0m\n"
 else
     echo "Packer is already installed. Not installing."
