@@ -22,10 +22,12 @@ TUNNEL_IP=$(head -n2 /home/ubuntu/${USERNAME}/where.txt | tail -1)
 
 sleep 3
 # OpenvSwitch configuration
+sudo ip link veth0 type veth peer name veth1
+sudo ifconfig veth0 up
+sudo ifconfig veth1 ${TUNNEL_IP}/24 up
 sudo ovs-vsctl add-br br0
 sudo ovs-vsctl add-port br0 vxlan0 -- set interface vxlan0 type=vxlan options:remote_ip=${PEER_IP}
-sudo ovs-vsctl add-port br0 vi0 -- set interface vi0 type=internal
-sudo ifconfig vi0 ${TUNNEL_IP}/24 up
+sudo ovs-vsctl add-port br0 veth1
 
 echo "Establishing VPN connection..."
 sudo openvpn /home/ubuntu/${USERNAME}/${USERNAME}.ovpn
