@@ -47,32 +47,32 @@ while (( "$#" )); do
 done
 
 if [[ -z "$OPENSTACK_IP" ]]; then
-  echo "\033[0;31mYou have not provided an Openstack IP. You -oi or -opip to provide an IP.\033[0m\n"
+  printf "\033[0;31mYou have not provided an Openstack IP. You -oi or -opip to provide an IP.\033[0m\n"
   exit 1
 fi
 
 if [[ -z "$VPN_IP" ]]; then
-  echo "\033[0;31mYou have not provided a VPN IP. You -vi or -vpnip to provide an IP.\033[0m\n"
+  printf "\033[0;31mYou have not provided a VPN IP. You -vi or -vpnip to provide an IP.\033[0m\n"
   exit 1
 fi
 
 if [[ -z "$IMAGE" ]]; then
-  echo "\033[0;31mYou have not provided an IMAGE name. You -i or -image to provide one.\033[0m\n"
+  printf "\033[0;31mYou have not provided an IMAGE name. You -i or -image to provide one.\033[0m\n"
   exit 1
 fi
 
 if [[ -z "$NETWORK" ]]; then
-  echo "\033[0;31mYou have not provided a NETWORK name. You -i or -image to provide one.\033[0m\n"
+  printf "\033[0;31mYou have not provided a NETWORK name. You -i or -image to provide one.\033[0m\n"
   exit 1
 fi
 
 if [[ -z "$PASSWORD" ]]; then
-  echo "\033[0;31mYou have not provided a PASSWORD for authentication. You -p or -password to provide one.\033[0m\n"
+  printf "\033[0;31mYou have not provided a PASSWORD for authentication. You -p or -password to provide one.\033[0m\n"
   exit 1
 fi
 
 if [[ -z "$FILENAME" ]]; then
-  echo "\033[0;31mYou have not provided a name for the VPN files. You -f or -filename to provide one.\033[0m\n"
+  printf "\033[0;31mYou have not provided a name for the VPN files. You -f or -filename to provide one.\033[0m\n"
   exit 1
 fi
 
