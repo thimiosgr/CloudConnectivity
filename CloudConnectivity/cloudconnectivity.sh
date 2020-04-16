@@ -65,6 +65,18 @@ fi
 
 source admin-openrc.sh ${PASSWD}
 
+# Checking if Packer is installed.
+if ! [ $(command -v packer) ]  ; then
+  echo "Installing Packer..."
+  export VER="1.5.5"
+  wget https://releases.hashicorp.com/packer/${VER}/packer_${VER}_linux_amd64.zip
+  unzip packer_${VER}_linux_amd64.zip
+  sudo mv packer /usr/local/bin
+  printf "\033[0;32mInstalled Packer.\033[0m\n"
+else
+  echo "Packer is already installed. Not installing."
+fi
+
 # Checking if command-line JSON processor jq is installed.
 if ! dpkg -s jq >/dev/null 2>&1; then
     echo "Installing jq."
@@ -76,7 +88,7 @@ fi
 
 # Checking if moreutils package is installed.
 if ! dpkg -s moreutils >/dev/null 2>&1; then
-    echo "Installing moreutils."
+    echo "Installing moreutils..."
     sudo apt-get install moreutils -y
     printf "\033[0;32mInstalled moreutils\033[0m\n"
 else
