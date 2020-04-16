@@ -63,8 +63,8 @@ if ! [[ -z ${COUNTER} ]]; then
   exit 1
 fi
 
-HOST_IP=$(ifconfig | grep "150.140.186.115" | awk '{print $2}' -)
-if [[ $HOST_IP == "150.140.186.115"]]; then
+HOST_IP=$(ifconfig | grep "150.140.186.127" | awk '{print $2}' -)
+if [[ $HOST_IP == "150.140.186.115" ]]; then
   source openstack1.sh
 else 
   source openstack2.sh
