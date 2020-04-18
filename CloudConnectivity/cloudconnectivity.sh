@@ -97,7 +97,7 @@ if ! [[ -z ${COUNTER} ]]; then
   exit 1
 fi
 
-source admin-openrc.sh ${PASSWD}
+source /home/comlab/Desktop/admin-openrc.sh ${PASSWD}
 
 # Checking if Packer is installed.
 if ! [ $(command -v packer) ]  ; then
