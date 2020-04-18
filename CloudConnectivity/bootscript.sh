@@ -27,7 +27,7 @@ sudo ifconfig veth0 up
 sudo ifconfig veth1 ${TUNNEL_IP}/24 up
 sudo ovs-vsctl add-br br0
 sudo ovs-vsctl add-port br0 vxlan0 -- set interface vxlan0 type=vxlan options:remote_ip=${PEER_IP}
-sudo ovs-vsctl add-port br0 veth1
+sudo ovs-vsctl add-port br0 veth0
 
 echo "Establishing VPN connection..."
 sudo openvpn /home/ubuntu/${USERNAME}/${USERNAME}.ovpn
