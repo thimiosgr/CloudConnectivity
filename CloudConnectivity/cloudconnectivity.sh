@@ -31,7 +31,12 @@ while (( "$#" )); do
       shift 2
       ;;
     -def | -default)
-      source openstack1.sh
+      IP=$(ifconfig | grep "150.140.186.127" | awk '{print $2}' -)
+      if [[ $IP == "150.140.186.115" ]]; then
+        source openstack1.sh
+      else
+        source openstack2.sh
+      fi
       break
       ;;
     -h | -help)
