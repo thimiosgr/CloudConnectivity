@@ -30,6 +30,10 @@ while (( "$#" )); do
       FILENAME=$2
       shift 2
       ;;
+    -def | - default)
+      source openstack1.sh
+      break
+      ;;
     -h | -help)
       COUNTER=1
       break
