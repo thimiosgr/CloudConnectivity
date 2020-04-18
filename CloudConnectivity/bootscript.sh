@@ -22,7 +22,7 @@ TUNNEL_IP=$(head -n2 /home/ubuntu/${USERNAME}/where.txt | tail -1)
 
 sleep 3
 # OpenvSwitch configuration
-sudo ip link veth0 type veth peer name veth1
+sudo ip link add veth0 type veth peer name veth1
 sudo ifconfig veth0 up
 sudo ifconfig veth1 ${TUNNEL_IP}/24 up
 sudo ovs-vsctl add-br br0
