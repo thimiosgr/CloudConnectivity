@@ -55,7 +55,7 @@ do
   ssh comlab@${OPENSTACK_ARR[i]} << EOF
     rm -rf CloudConnectivity
     git clone https://github.com/thimiosgr/CloudConnectivity.git
-    cd CloudConnectivity/CloudConnectivity
+    cd CloudConnectivity/scripts
     ./cloudconnectivity.sh -def
 EOF
 i=$((i+1))
