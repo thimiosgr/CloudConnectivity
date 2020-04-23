@@ -14,7 +14,6 @@ while (( "$#" )); do
       ;;
     -*|--*=) # unsupported flags
       echo "Error: Unsupported flag $1" >&2
-      COUNTER=1
       exit 1
       ;;
   esac
