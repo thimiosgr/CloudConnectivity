@@ -135,7 +135,7 @@ else
 fi
 
 # Regular expression to check if IP's given by user are correct.
-IP_RE="^(([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])+$"
+IP_RE="^(([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5]){1}$"
 
 if ! [[ ${OPENSTACK_IP} =~ ${IP_RE} ]]; then
   printf "\033[0;31mThe Openstack IP is not correct.\033[0m\n"
