@@ -179,7 +179,7 @@ jq --arg v "${SERVICE}" '.provisioners[1].source = $v' imagebuild.json|sponge im
 sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' bootscript.sh
 sed -i '6s/.*/USERNAME='"${FILENAME}"'/' bootscript.sh
 
-echo "Building image... This might take some minutes, depending on your hardware and your Internet connection."
+echo "Building image... This might take some time, depending on your hardware and your Internet connection."
 packer build imagebuild.json > /dev/null 2>&1
 printf "\033[0;32mCreated image: packerimage.\n\033[0mRun 'openstack image list' for confirmation.\n"
 
