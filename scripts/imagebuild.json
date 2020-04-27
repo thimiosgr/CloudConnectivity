@@ -29,6 +29,7 @@
       "type": "shell",
       "inline": [
         "sleep 5",
+        "sudo /bin/echo 1 > /proc/sys/net/ipv4/ip_forward",
         "sudo mv bootscript.sh /usr/local/bin > /dev/null 2>&1",
         "sudo chmod 755 /usr/local/bin/bootscript.sh > /dev/null 2>&1",
         "sudo mv connectivity.service /etc/systemd/system > /dev/null 2>&1",
