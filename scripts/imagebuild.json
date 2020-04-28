@@ -30,7 +30,7 @@
       "inline_shebang": "/bin/bash -e",
       "inline": [
         "sleep 5",
-        "sudo echo \"net.ipv4.ip_forward=1\" >> /etc/sysctl.conf",
+        "sudo bash -c 'echo \"net.ipv4.ip_forward=1\" >> /etc/sysctl.conf' 2>&1",
         "sudo mv bootscript.sh /usr/local/bin > /dev/null 2>&1",
         "sudo chmod 755 /usr/local/bin/bootscript.sh > /dev/null 2>&1",
         "sudo mv connectivity.service /etc/systemd/system > /dev/null 2>&1",
