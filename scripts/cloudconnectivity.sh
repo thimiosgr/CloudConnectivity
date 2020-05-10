@@ -157,10 +157,10 @@ if [[ -z "${IMAGE_ID}" ]]; then
   exit 1
 fi
 
-if [[ -z "${NETWORK_ID}" ]]; then
-  printf "\033[0;31mThe network name you provided is not correct.\033[0m\n"
-  exit 1
-fi
+# if [[ -z "${NETWORK_ID}" ]]; then
+#   printf "\033[0;31mThe network name you provided is not correct.\033[0m\n"
+#   exit 1
+# fi
 
 # Modifying the Packer JSON file according to the user's preferences.
 IDENTITY="http://${OPENSTACK_IP}/identity"
