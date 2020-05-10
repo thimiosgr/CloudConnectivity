@@ -22,8 +22,9 @@ if [[ -f "$FILE" ]]; then
         # OpenvSwitch configuration
         sudo ovs-vsctl add-br br0
         sudo ovs-vsctl add-port br0 vxlan0 -- set interface vxlan0 type=vxlan options:remote_ip=${VTEP_IP}
-        sudo ip addr flush ens4
-        sudo ifconfig br0 ${IN_NET_IP} up
+        sudo ip addr flush dev ens4
+        sudo ip addr add ${IN_NET_IP} dev br0
+        sudo ip link set br0 up
 #        sudo openvpn /home/ubuntu/${USERNAME}/${USERNAME}.ovpn
     fi
 fi

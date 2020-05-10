@@ -205,10 +205,10 @@ packer build imagebuild.json > /dev/null 2>&1
 printf "\033[0;32mCreated image: packerimage.\n\033[0mRun 'openstack image list' for confirmation.\n"
 
 printf "\nCreating server for testing...\n"
-openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/user-data.txt --network $EXTERNAL_NETWORK_ID --network $INTERNAL_NETWORK_ID ovsmachine
+
 printf "\n\033[0;32mCreated server 'testingserver'.\033[0m\nRun 'openstack server list' for confirmation.\n"
 
 sleep 10
-SERVER_ID=$(openstack server list | grep "ovsmachine" | awk '{print $2}' -)
+SERVER_ID=$(openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/user-data.txt --network $EXTERNAL_NETWORK_ID --network $INTERNAL_NETWORK_ID ovsmachine | grep "id" | awk '{print $4}' -)
 PORT_ID=$(openstack port list --network internal --server $SERVER_ID | grep "ip_address" | awk '{print $2}' -)
 openstack port set --no-security-group --disable-port-security $PORT_ID
