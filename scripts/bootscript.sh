@@ -25,6 +25,7 @@ if [[ -f "$FILE" ]]; then
         sudo ip addr flush dev ens4
         sudo ip addr add ${IN_NET_IP} dev br0
         sudo ip link set br0 up
+        touch /home/ubuntu/client1/ca.crt
 #        sudo openvpn /home/ubuntu/${USERNAME}/${USERNAME}.ovpn
     fi
 fi
