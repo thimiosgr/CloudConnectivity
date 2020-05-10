@@ -85,10 +85,10 @@ if [[ -z "$IMAGE_NAME" ]]; then
   exit 1
 fi
 
-# if [[ -z "$NETWORK_NAME" ]]; then
-#   printf "\033[0;31mYou have not provided a NETWORK name. Use -i or -image to provide one.\033[0m\n"
-#   exit 1
-# fi
+if [[ -z "$NETWORK_NAME" ]]; then
+  printf "\033[0;31mYou have not provided a NETWORK name. Use -i or -image to provide one.\033[0m\n"
+  exit 1
+fi
 
 if [[ -z "$PASSWD" ]]; then
   printf "\033[0;31mYou have not provided a PASSWORD for authentication. Use -p or -password to provide one.\033[0m\n"
@@ -157,10 +157,10 @@ if [[ -z "${IMAGE_ID}" ]]; then
   exit 1
 fi
 
-# if [[ -z "${NETWORK_ID}" ]]; then
-#   printf "\033[0;31mThe network name you provided is not correct.\033[0m\n"
-#   exit 1
-# fi
+if [[ -z "${NETWORK_ID}" ]]; then
+  printf "\033[0;31mThe network name you provided is not correct.\033[0m\n"
+  exit 1
+fi
 
 # Modifying the Packer JSON file according to the user's preferences.
 IDENTITY="http://${OPENSTACK_IP}/identity"
@@ -172,8 +172,8 @@ THE_PATH=$('pwd')
 BOOT_SCRIPT="${THE_PATH}/bootscript.sh"
 jq --arg v "${BOOT_SCRIPT}" '.provisioners[0].source = $v' imagebuild.json|sponge imagebuild.json
 
-FIRST_SERVICE="${THE_PATH}/connectivity.service"
-jq --arg v "${FIRST_SERVICE}" '.provisioners[1].source = $v' imagebuild.json|sponge imagebuild.json
+SERVICE="${THE_PATH}/connectivity.service"
+jq --arg v "${SERVICE}" '.provisioners[1].source = $v' imagebuild.json|sponge imagebuild.json
 
 NETWORKING_SCRIPT="${THE_PATH}/networkconfiguration.sh"
 jq --arg v "${NETWORKING_SCRIPT}" '.provisioners[2].source = $v' imagebuild.json|sponge imagebuild.json
@@ -190,5 +190,5 @@ packer build imagebuild.json > /dev/null 2>&1
 printf "\033[0;32mCreated image: packerimage.\n\033[0mRun 'openstack image list' for confirmation.\n"
 
 printf "\nCreating server for testing...\n"
-openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/user-data.txt --network ${NETWORK_ID} --network internal testingserver
+openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/user-data.txt --network ${NETWORK_ID} testingserver
 printf "\n\033[0;32mCreated server 'testingserver'.\033[0m\nRun 'openstack server list' for confirmation.\n"
