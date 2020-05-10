@@ -85,10 +85,10 @@ if [[ -z "$IMAGE_NAME" ]]; then
   exit 1
 fi
 
-if [[ -z "$NETWORK_NAME" ]]; then
-  printf "\033[0;31mYou have not provided a NETWORK name. Use -i or -image to provide one.\033[0m\n"
-  exit 1
-fi
+# if [[ -z "$NETWORK_NAME" ]]; then
+#   printf "\033[0;31mYou have not provided a NETWORK name. Use -i or -image to provide one.\033[0m\n"
+#   exit 1
+# fi
 
 if [[ -z "$PASSWD" ]]; then
   printf "\033[0;31mYou have not provided a PASSWORD for authentication. Use -p or -password to provide one.\033[0m\n"
