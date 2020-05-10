@@ -172,8 +172,14 @@ THE_PATH=$('pwd')
 BOOT_SCRIPT="${THE_PATH}/bootscript.sh"
 jq --arg v "${BOOT_SCRIPT}" '.provisioners[0].source = $v' imagebuild.json|sponge imagebuild.json
 
-SERVICE="${THE_PATH}/connectivity.service"
-jq --arg v "${SERVICE}" '.provisioners[1].source = $v' imagebuild.json|sponge imagebuild.json
+FIRST_SERVICE="${THE_PATH}/connectivity.service"
+jq --arg v "${FIRST_SERVICE}" '.provisioners[1].source = $v' imagebuild.json|sponge imagebuild.json
+
+NETWORKING_SCRIPT="${THE_PATH}/networkconfiguration.sh"
+jq --arg v "${NETWORKING_SCRIPT}" '.provisioners[2].source = $v' imagebuild.json|sponge imagebuild.json
+
+NETWORKING_SERVICE="${THE_PATH}/networkconf.service"
+jq --arg v "${NETWORKING_SERVICE}" '.provisioners[3].source = $v' imagebuild.json|sponge imagebuild.json
 
 # Edit the boot script of the new image, providing it with the IP of the VPN server and the username that it will use to fetch the VPN files.
 sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' bootscript.sh
