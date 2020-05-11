@@ -7,7 +7,7 @@ USERNAME="client1"
 
 sudo mkdir /home/ubuntu/${USERNAME}
 CHECK_FILE=/home/ubuntu/${USERNAME}/ca.crt
-FILE=/home/ubuntu/temp
+FILE=/home/ubuntu/temp2
 
 if [[ -f "$FILE" ]]; then
     if ! [ -f "${CHECK_FILE}" ]; then
