@@ -162,10 +162,6 @@ IMAGE_ID=$(openstack image list | grep ${IMAGE_NAME} | awk '{print $2}' -)
 EXTERNAL_NETWORK_ID=$(openstack network list | grep ${EXTERNAL_NETWORK} | awk '{print $2}' -)
 INTERNAL_NETWORK_ID=$(openstack network list | grep ${INTERNAL_NETWORK} | awk '{print $2}' -)
 
-echo ${IMAGE_ID}
-echo ${EXTERNAL_NETWORK_ID}
-echo ${INTERNAL_NETWORK_ID}
-
 # Checking if the image and network given by user are correct.
 if [[ -z "${IMAGE_ID}" ]]; then
   printf "\033[0;31mThe image name you provided is not correct.\033[0m\n"
@@ -199,11 +195,6 @@ jq --arg v "${NETWORKING_SCRIPT}" '.provisioners[2].source = $v' imagebuild.json
 
 NETWORKING_SERVICE="${THE_PATH}/services/networkconf.service"
 jq --arg v "${NETWORKING_SERVICE}" '.provisioners[3].source = $v' imagebuild.json|sponge imagebuild.json
-
-echo ${NETWORKING_SCRIPT}
-echo ${NETWORKING_SERVICE}
-echo ${TUNNEL_SCRIPT}
-echo ${TUNNEL_SERVICE}
 
 # Edit the boot script of the new image, providing it with the IP of the VPN server and the username that it will use to fetch the VPN files.
 sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' ${THE_PATH}/services/tunnelcreator.sh
