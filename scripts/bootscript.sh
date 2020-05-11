@@ -20,11 +20,9 @@ if [[ -f "$FILE" ]]; then
         sleep 3
         IN_NET_IP="$(ip a | awk '/ens4/{getline;getline; print}' | awk -F/ '{print $1}' - | awk '{print $2}' -)/24"
         # OpenvSwitch configuration
-        sudo ifconfig ens4 0
-        sudo ifconfig ens4 $IN_NET_IP up
         sudo ovs-vsctl add-br br0
-        sudo ovs-vsctl add-port br0 vxlan0 -- set interface vxlan0 type=vxlan options:remote_ip=${VTEP_IP}
         sudo ip addr flush dev ens4
+        sudo ovs-vsctl add-port br0 ens4
         sudo ip addr add ${IN_NET_IP} dev br0
         sudo ip link set br0 up
         touch /home/ubuntu/client1/ca.crt
