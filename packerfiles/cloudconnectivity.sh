@@ -110,7 +110,7 @@ fi
 
 # set positional arguments in their proper place
 eval set -- "${PARAMS}"
-source ${THE_PATH}/credentials/openstack/admin-openrc.sh ${PASSWD}
+source ${THE_PATH}/credentials/openstack/admin-openrc1.sh ${PASSWD}
 
 # Checking if Packer is installed.
 if ! [ $(command -v packer) ]  ; then
