@@ -1,0 +1,10 @@
+[Unit]
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/bootscript.sh
+
+[Install]
+WantedBy=default.target
+
+
