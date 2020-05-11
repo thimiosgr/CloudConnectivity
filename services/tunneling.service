@@ -2,7 +2,7 @@
 After=network.target
 
 [Service]
-ExecStart=/usr/local/bin/bootscript.sh
+ExecStart=/usr/local/bin/tunnelcreator.sh
 
 [Install]
 WantedBy=default.target

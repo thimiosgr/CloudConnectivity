@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Give permissions to the JSON and Service file.
-chmod 666 imagebuild.json
+THE_PATH="/home/comlab/Desktop/CloudConnectivity"
 PARAMS=""
 while (( "$#" )); do
   case "$1" in
@@ -36,9 +35,9 @@ while (( "$#" )); do
     -def | -default)
       IP=$(ifconfig | grep "150.140.186.127" | awk '{print $2}' -)
       if [[ $IP == "150.140.186.115" ]]; then
-        source openstack1.sh
+        source ${THE_PATH}/credentials/args/openstack1.sh
       else
-        source openstack2.sh
+        source ${THE_PATH}/credentials/args/openstack2.sh
       fi
       break
       ;;
@@ -111,7 +110,7 @@ fi
 
 # set positional arguments in their proper place
 eval set -- "${PARAMS}"
-source /home/comlab/Desktop/admin-openrc.sh ${PASSWD}
+source credentials/openstack/admin-openrc.sh ${PASSWD}
 
 # Checking if Packer is installed.
 if ! [ $(command -v packer) ]  ; then
@@ -183,22 +182,21 @@ jq --arg v "${IDENTITY}" '.builders[].identity_endpoint = $v' imagebuild.json|sp
 jq --arg v "${IMAGE_ID}" '.builders[].source_image = $v' imagebuild.json|sponge imagebuild.json
 jq --arg v "${EXTERNAL_NETWORK_ID}" '.builders[].networks[] = $v' imagebuild.json|sponge imagebuild.json
 
-THE_PATH=$('pwd')
-TUNNEL_SCRIPT="${THE_PATH}/bootscript.sh"
+TUNNEL_SCRIPT="${THE_PATH}/services/tunnelcreator.sh"
 jq --arg v "${TUNNEL_SCRIPT}" '.provisioners[0].source = $v' imagebuild.json|sponge imagebuild.json
 
-TUNNEL_SERVICE="${THE_PATH}/connectivity.service"
+TUNNEL_SERVICE="${THE_PATH}/services/connectivity.service"
 jq --arg v "${TUNNEL_SERVICE}" '.provisioners[1].source = $v' imagebuild.json|sponge imagebuild.json
 
-NETWORKING_SCRIPT="${THE_PATH}/networkconfiguration.sh"
+NETWORKING_SCRIPT="${THE_PATH}/services/networkconfiguration.sh"
 jq --arg v "${NETWORKING_SCRIPT}" '.provisioners[2].source = $v' imagebuild.json|sponge imagebuild.json
 
-NETWORKING_SERVICE="${THE_PATH}/networkconf.service"
+NETWORKING_SERVICE="${THE_PATH}/services/networkconf.service"
 jq --arg v "${NETWORKING_SERVICE}" '.provisioners[3].source = $v' imagebuild.json|sponge imagebuild.json
 
 # Edit the boot script of the new image, providing it with the IP of the VPN server and the username that it will use to fetch the VPN files.
-sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' bootscript.sh
-sed -i '6s/.*/USERNAME='"${FILENAME}"'/' bootscript.sh
+sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' ${THE_PATH}/services/tunnelcreator.sh
+sed -i '6s/.*/USERNAME='"${FILENAME}"'/' ${THE_PATH}/services/tunnelcreator.sh
 
 echo "Building image... This might take some time, depending on your hardware and your Internet connection."
 packer build imagebuild.json > /dev/null 2>&1
@@ -208,7 +206,7 @@ printf "\nCreating server for testing...\n"
 
 printf "\n\033[0;32mCreated server 'testingserver'.\033[0m\nRun 'openstack server list' for confirmation.\n"
 
-SERVER_ID=$(openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/user-data.txt --network $EXTERNAL_NETWORK_ID --network $INTERNAL_NETWORK_ID ovsmachine | grep " id " | awk '{print $4}' -)
+SERVER_ID=$(openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network $EXTERNAL_NETWORK_ID --network $INTERNAL_NETWORK_ID ovsmachine | grep " id " | awk '{print $4}' -)
 sleep 10
 PORT_ID=$(openstack port list --network internal --server $SERVER_ID | grep "ip_address" | awk '{print $2}' -)
 openstack port set --no-security-group --disable-port-security $PORT_ID
