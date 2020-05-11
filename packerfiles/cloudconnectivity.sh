@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sudo chmod 666 imagebuild.json
+pwd
 THE_PATH="$(pwd)/CloudConnectivity"
 PARAMS=""
 while (( "$#" )); do
