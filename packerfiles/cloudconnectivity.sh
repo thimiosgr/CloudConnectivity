@@ -176,7 +176,7 @@ if [[ -z "${INTERNAL_NETWORK_ID}" ]]; then
   printf "\033[0;31mThe internal network name you provided is not correct.\033[0m\n"
   exit 1
 fi
-
+echo 
 # Modifying the Packer JSON file according to the user's preferences.
 IDENTITY="http://${OPENSTACK_IP}/identity"
 jq --arg v "${IDENTITY}" '.builders[].identity_endpoint = $v' imagebuild.json|sponge imagebuild.json
@@ -199,10 +199,8 @@ jq --arg v "${NETWORKING_SERVICE}" '.provisioners[3].source = $v' imagebuild.jso
 sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' ${THE_PATH}/services/tunnelcreator.sh
 sed -i '6s/.*/USERNAME='"${FILENAME}"'/' ${THE_PATH}/services/tunnelcreator.sh
 
-cat imagebuild.json
-
 echo "Building image... This might take some time, depending on your hardware and your Internet connection."
-packer build imagebuild.json > /dev/null 2>&1
+packer build imagebuild.json
 printf "\033[0;32mCreated image: packerimage.\n\033[0mRun 'openstack image list' for confirmation.\n"
 
 printf "\nCreating server for testing...\n"
