@@ -1,6 +1,6 @@
 #!/bin/bash
 
-THE_PATH="/home/CloudConnectivity"
+THE_PATH="$(pwd)/CloudConnectivity"
 PARAMS=""
 while (( "$#" )); do
   case "$1" in
