@@ -36,8 +36,10 @@ while (( "$#" )); do
       IP=$(ifconfig | grep "150.140.186.127" | awk '{print $2}' -)
       if [[ $IP == "150.140.186.115" ]]; then
         source ${THE_PATH}/credentials/vars/openstack1.sh
+        source ${THE_PATH}/credentials/openstack/admin-openrc1.sh ${PASSWD}
       else
         source ${THE_PATH}/credentials/vars/openstack2.sh
+        source ${THE_PATH}/credentials/openstack/admin-openrc2.sh ${PASSWD}
       fi
       break
       ;;
@@ -110,7 +112,6 @@ fi
 
 # set positional arguments in their proper place
 eval set -- "${PARAMS}"
-source ${THE_PATH}/credentials/openstack/admin-openrc1.sh ${PASSWD}
 
 # Checking if Packer is installed.
 if ! [ $(command -v packer) ]  ; then
@@ -185,7 +186,7 @@ jq --arg v "${EXTERNAL_NETWORK_ID}" '.builders[].networks[] = $v' imagebuild.jso
 TUNNEL_SCRIPT="${THE_PATH}/services/tunnelcreator.sh"
 jq --arg v "${TUNNEL_SCRIPT}" '.provisioners[0].source = $v' imagebuild.json|sponge imagebuild.json
 
-TUNNEL_SERVICE="${THE_PATH}/services/connectivity.service"
+TUNNEL_SERVICE="${THE_PATH}/services/tunneling.service"
 jq --arg v "${TUNNEL_SERVICE}" '.provisioners[1].source = $v' imagebuild.json|sponge imagebuild.json
 
 NETWORKING_SCRIPT="${THE_PATH}/services/networkconfiguration.sh"
