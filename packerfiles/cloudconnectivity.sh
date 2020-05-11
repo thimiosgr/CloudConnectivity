@@ -1,6 +1,6 @@
 #!/bin/bash
 
-THE_PATH="/home/comlab/Desktop/CloudConnectivity"
+THE_PATH="/home/CloudConnectivity"
 PARAMS=""
 while (( "$#" )); do
   case "$1" in
