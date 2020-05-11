@@ -196,6 +196,7 @@ jq --arg v "${NETWORKING_SCRIPT}" '.provisioners[2].source = $v' imagebuild.json
 NETWORKING_SERVICE="${THE_PATH}/services/networkconf.service"
 jq --arg v "${NETWORKING_SERVICE}" '.provisioners[3].source = $v' imagebuild.json|sponge imagebuild.json
 
+cat imagebuild.json
 # Edit the boot script of the new image, providing it with the IP of the VPN server and the username that it will use to fetch the VPN files.
 sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' ${THE_PATH}/services/tunnelcreator.sh
 sed -i '6s/.*/USERNAME='"${FILENAME}"'/' ${THE_PATH}/services/tunnelcreator.sh
