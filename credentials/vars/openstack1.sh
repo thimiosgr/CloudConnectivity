@@ -1,5 +1,5 @@
 export OPENSTACK_IP="150.140.186.115"
-export VPN_IP="85.73.179.141"
+export VPN_IP="94.64.103.219"
 export FILENAME="client1"
 export PASSWD="ops"
 export EXTERNAL_NETWORK="external"
