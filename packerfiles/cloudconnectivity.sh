@@ -201,7 +201,7 @@ sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' ${THE_PATH}/services/tunnelcreator.sh
 sed -i '6s/.*/USERNAME='"${FILENAME}"'/' ${THE_PATH}/services/tunnelcreator.sh
 
 echo "Building image... This might take some time, depending on your hardware and your Internet connection."
-packer build ${THE_PATH}/packerfiles/imagebuild.json
+packer build ${THE_PATH}/packerfiles/imagebuild.json > /dev/null 2>&1
 printf "\033[0;32mCreated image: packerimage.\n\033[0mRun 'openstack image list' for confirmation.\n"
 
 printf "\nCreating server for testing...\n"
@@ -212,3 +212,4 @@ SERVER_ID=$(openstack server create --image packerimage --flavor m1.heat_int --k
 sleep 10
 PORT_ID=$(openstack port list --network internal --server $SERVER_ID | grep "ip_address" | awk '{print $2}' -)
 openstack port set --no-security-group --disable-port-security $PORT_ID
+openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network $INTERNAL_NETWORK_ID peer
