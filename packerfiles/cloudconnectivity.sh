@@ -180,28 +180,28 @@ fi
 
 # Modifying the Packer JSON file according to the user's preferences.
 IDENTITY="http://${OPENSTACK_IP}/identity"
-jq --arg v "${IDENTITY}" '.builders[].identity_endpoint = $v' imagebuild.json | sponge imagebuild.json
-jq --arg v "${IMAGE_ID}" '.builders[].source_image = $v' imagebuild.json | sponge imagebuild.json
-jq --arg v "${EXTERNAL_NETWORK_ID}" '.builders[].networks[] = $v' imagebuild.json | sponge imagebuild.json
+jq --arg v ${IDENTITY} '.builders[].identity_endpoint = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
+jq --arg v ${IMAGE_ID} '.builders[].source_image = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
+jq --arg v ${EXTERNAL_NETWORK_ID} '.builders[].networks[] = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
 
 TUNNEL_SCRIPT="${THE_PATH}/services/tunnelcreator.sh"
-jq --arg v "${TUNNEL_SCRIPT}" '.provisioners[0].source = $v' imagebuild.json | sponge imagebuild.json
+jq --arg v "${TUNNEL_SCRIPT}" '.provisioners[0].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
 
 TUNNEL_SERVICE="${THE_PATH}/services/tunneling.service"
-jq --arg v "${TUNNEL_SERVICE}" '.provisioners[1].source = $v' imagebuild.json | sponge imagebuild.json
+jq --arg v "${TUNNEL_SERVICE}" '.provisioners[1].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
 
 NETWORKING_SCRIPT="${THE_PATH}/services/networkconfiguration.sh"
-jq --arg v "${NETWORKING_SCRIPT}" '.provisioners[2].source = $v' imagebuild.json | sponge imagebuild.json
+jq --arg v "${NETWORKING_SCRIPT}" '.provisioners[2].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
 
 NETWORKING_SERVICE="${THE_PATH}/services/networkconf.service"
-jq --arg v "${NETWORKING_SERVICE}" '.provisioners[3].source = $v' imagebuild.json | sponge imagebuild.json
+jq --arg v "${NETWORKING_SERVICE}" '.provisioners[3].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
 
 # Edit the boot script of the new image, providing it with the IP of the VPN server and the username that it will use to fetch the VPN files.
 sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' ${THE_PATH}/services/tunnelcreator.sh
 sed -i '6s/.*/USERNAME='"${FILENAME}"'/' ${THE_PATH}/services/tunnelcreator.sh
 
 echo "Building image... This might take some time, depending on your hardware and your Internet connection."
-packer build imagebuild.json
+packer build ${THE_PATH}/packerfiles/imagebuild.json
 printf "\033[0;32mCreated image: packerimage.\n\033[0mRun 'openstack image list' for confirmation.\n"
 
 printf "\nCreating server for testing...\n"
