@@ -18,12 +18,12 @@
     {
       "type": "file",
       "source": "/home/comlab/CloudConnectivity/scripts/bootscript.sh",
-      "destination": "/home/ubuntu/bootscript.sh"
+      "destination": "/home/ubuntu/tunnelcreator.sh"
     },
     {
       "type": "file",
       "source": "/home/comlab/CloudConnectivity/scripts/connectivity.service",
-      "destination": "/home/ubuntu/connectivity.service"
+      "destination": "/home/ubuntu/tunneling.service"
     },
     {
       "type": "file",
