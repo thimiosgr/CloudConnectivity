@@ -1,7 +1,7 @@
 #!/bin/bash
 
-sudo chmod 666 imagebuild.json
 THE_PATH="/home/comlab/CloudConnectivity"
+sudo chmod 666 imagebuild.json
 PARAMS=""
 while (( "$#" )); do
   case "$1" in
