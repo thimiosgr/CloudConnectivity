@@ -20,6 +20,7 @@ if [[ -f "$FILE" ]]; then
         sleep 3
         IN_NET_IP="$(ip a | awk '/ens4/{getline;getline; print}' | awk -F/ '{print $1}' - | awk '{print $2}' -)/24"
         # OpenvSwitch configuration
+        sudo ip route add default via 192.168.1.1
         sudo ovs-vsctl add-br br0
         sudo ip addr flush dev ens4
         sudo ovs-vsctl add-port br0 ens4
