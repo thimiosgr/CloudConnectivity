@@ -3,12 +3,12 @@
     {
       "type": "openstack",
       "ssh_username": "ubuntu",
-      "identity_endpoint": "http://150.140.186.115/identity",
+      "identity_endpoint": "http://150.140.186.118/identity",
       "image_name": "packerimage",
-      "source_image": "e9ad70c4-438e-483b-bff7-931b2181bad6",
+      "source_image": "hello",
       "flavor": "m1.heat_int",
       "networks": [
-        "3e42296e-cdbf-4099-a4c4-3ea4df87535c"
+        "hello"
       ],
       "use_floating_ip": true,
       "floating_ip_pool": "public"
@@ -17,22 +17,22 @@
   "provisioners": [
     {
       "type": "file",
-      "source": "/home/comlab/CloudConnectivity/scripts/bootscript.sh",
+      "source": "/home/webserver/CloudConnectivity/services/tunnelcreator.sh",
       "destination": "/home/ubuntu/tunnelcreator.sh"
     },
     {
       "type": "file",
-      "source": "/home/comlab/CloudConnectivity/scripts/connectivity.service",
+      "source": "/home/webserver/CloudConnectivity/services/tunneling.service",
       "destination": "/home/ubuntu/tunneling.service"
     },
     {
       "type": "file",
-      "source": "/home/comlab/CloudConnectivity/scripts/connectivity.service",
+      "source": "/home/webserver/CloudConnectivity/services/networkconfiguration.sh",
       "destination": "/home/ubuntu/networkconfiguration.sh"
     },
     {
       "type": "file",
-      "source": "/home/comlab/CloudConnectivity/scripts/connectivity.service",
+      "source": "/home/webserver/CloudConnectivity/services/networkconf.service",
       "destination": "/home/ubuntu/networkconf.service"
     },
     {
