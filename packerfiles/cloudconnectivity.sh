@@ -210,5 +210,5 @@ sleep 10
 PORT_ID=$(openstack port list --network internal --server $SERVER_ID | grep "ip_address" | awk '{print $2}' -)
 openstack port set --no-security-group --disable-port-security $PORT_ID
 printf "Creating simple server...\n"
-openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network $INTERNAL_NETWORK_ID peer
+openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network $INTERNAL_NETWORK_ID peer > /dev/null 2>&1
 printf "\033[0;32mCreated server 'peer'.\033[0m\nRun 'openstack server list' for confirmation.\n"
