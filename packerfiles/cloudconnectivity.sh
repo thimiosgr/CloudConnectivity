@@ -178,11 +178,6 @@ if [[ -z "${INTERNAL_NETWORK_ID}" ]]; then
   exit 1
 fi
 
-echo ${OPENSTACK_IP}
-echo $VPN_IP
-echo $PASSWD
-echo $VPN_IP
-
 # Modifying the Packer JSON file according to the user's preferences.
 IDENTITY="http://${OPENSTACK_IP}/identity"
 jq --arg v "${IDENTITY}" '.builders[].identity_endpoint = $v' imagebuild.json | sponge imagebuild.json
