@@ -26,8 +26,9 @@ if [[ -f "$FILE" ]]; then
         sudo ip addr add ${IN_NET_IP} dev br0
         sudo ip link set br0 up
         sudo ip route add default via 192.168.1.1
-	sudo ovs-vsctl add-port br0 vxlan0 -- set interface vxlan0 type=vxlan options:remote_ip=${VTEP_IP}
-        sudo openvpn /home/ubuntu/${USERNAME}/${USERNAME}.ovpn
+        sudo openvt -f -s -c 7 -- sudo openvpn /home/ubuntu/${USERNAME}/${USERNAME}.ovpn
+        sleep 5
+        sudo ovs-vsctl add-port br0 vxlan0 -- set interface vxlan0 type=vxlan options:remote_ip=${VTEP_IP}
     fi
 fi
 
