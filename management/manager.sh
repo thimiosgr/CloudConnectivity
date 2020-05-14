@@ -49,7 +49,7 @@ done
 COUNTER=0
 while [ "$COUNTER" -lt "${#OPENSTACK_ARR[@]}" ]; 
 do
-  ssh comlab@${OPENSTACK_ARR[COUNTER]} > /dev/null 2>&1 << EOF
+  ssh comlab@${OPENSTACK_ARR[COUNTER]} << EOF
     rm -rf CloudConnectivity
     git clone https://github.com/thimiosgr/CloudConnectivity.git
     ./CloudConnectivity/packerfiles/cloudconnectivity.sh -def
