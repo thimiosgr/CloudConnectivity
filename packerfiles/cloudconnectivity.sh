@@ -1,7 +1,6 @@
 #!/bin/bash
 
-THE_PATH="/home/comlab/CloudConnectivity"
-sudo chmod 666 imagebuild.json
+THE_PATH="$(pwd)/CloudConnectivity"
 PARAMS=""
 while (( "$#" )); do
   case "$1" in
@@ -144,7 +143,7 @@ else
     echo  "Package moreutils is already instaled. Not installing."
 fi
 
-# Regular expression to check if IP's given by user are correct.
+# Regular expression to check if the IP's given by user are correct.
 IP_RE="^(([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5]){1}$"
 
 if ! [[ ${OPENSTACK_IP} =~ ${IP_RE} ]]; then
@@ -157,12 +156,12 @@ if ! [[ ${VPN_IP} =~ ${IP_RE} ]]; then
   exit 1
 fi
 
-# Converting image and network names to ID's, so they can be passed to Packer JSON file.
+# Converting image and network names to ID's, so they can be passed to the JSON file that will be used by Packer.
 IMAGE_ID=$(openstack image list | grep ${IMAGE_NAME} | awk '{print $2}' -)
 EXTERNAL_NETWORK_ID=$(openstack network list | grep ${EXTERNAL_NETWORK} | awk '{print $2}' -)
 INTERNAL_NETWORK_ID=$(openstack network list | grep ${INTERNAL_NETWORK} | awk '{print $2}' -)
 
-# Checking if the image and network given by user are correct.
+# Checking if the image and network given by the user are correct.
 if [[ -z "${IMAGE_ID}" ]]; then
   printf "\033[0;31mThe image name you provided is not correct.\033[0m\n"
   exit 1
@@ -203,12 +202,16 @@ sed -i '6s/.*/USERNAME='"${FILENAME}"'/' ${THE_PATH}/services/tunnelcreator.sh
 echo "Building image... This might take some time, depending on your hardware and your Internet connection."
 packer build ${THE_PATH}/packerfiles/imagebuild.json > /dev/null 2>&1
 printf "\033[0;32mCreated image: packerimage.\n\033[0mRun 'openstack image list' for confirmation.\n"
+
 printf "\nCreating server for Open vSwitch...\n"
 SERVER_ID=$(openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network $EXTERNAL_NETWORK_ID --network $INTERNAL_NETWORK_ID OVSmachine | grep " id " | awk '{print $4}' -)
 printf "\n\033[0;32mCreated server 'OVSmachine'.\033[0m\nRun 'openstack server list' for confirmation.\n"
 sleep 10
+
+# Disabling post security on the OVS machine's port so that the interface can be added to an OVS bridge.
 PORT_ID=$(openstack port list --network internal --server $SERVER_ID | grep "ip_address" | awk '{print $2}' -)
 openstack port set --no-security-group --disable-port-security $PORT_ID
+
 printf "Creating simple server...\n"
 openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network $INTERNAL_NETWORK_ID peer > /dev/null 2>&1
 printf "\033[0;32mCreated server 'peer'.\033[0m\nRun 'openstack server list' for confirmation.\n"
