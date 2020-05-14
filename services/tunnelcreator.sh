@@ -17,7 +17,7 @@ if [[ -f "$FILE" ]]; then
         wget http://${VPN_IP}/${USERNAME}/${USERNAME}.key -P /home/ubuntu/${USERNAME}/
         wget http://${VPN_IP}/${USERNAME}/${USERNAME}.ovpn -P /home/ubuntu/${USERNAME}/
         wget http://${VPN_IP}/${USERNAME}/vtep.sh -P /home/ubuntu/${USERNAME}/
-        VTEP_IP=$(head -n1 /home/ubuntu/${USERNAME}/vtep.txt)
+        VTEP_IP=$(head -n1 /home/ubuntu/${USERNAME}/vtep.sh)
         sleep 3
         IN_NET_IP="$(ip a | awk '/ens4/{getline;getline; print}' | awk -F/ '{print $1}' - | awk '{print $2}' -)/24"
         # OpenvSwitch configuration
