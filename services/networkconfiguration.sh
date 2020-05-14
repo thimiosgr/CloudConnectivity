@@ -2,6 +2,7 @@
 
 FILE=/home/ubuntu/temp
 
+sudo ip route add default via 192.168.1.1
 if ! [[ -f "$FILE" ]]; then
     sudo bash -c "echo auto ens4 >> /etc/network/interfaces.d/50-cloud-init.cfg"
     sudo bash -c "echo iface ens4 inet dhcp >> /etc/network/interfaces.d/50-cloud-init.cfg"
