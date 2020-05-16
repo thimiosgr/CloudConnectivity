@@ -17,7 +17,7 @@ while (( "$#" )); do
       shift 2
       ;;
     -xn | -xnet)
-      EXTERNAL_NETWORK=$2
+      PRIMARY_NETWORK=$2
       shift 2
       ;;
     -in | -inet)
@@ -167,7 +167,7 @@ openstack router add subnet ROUTER internal_network1_subnet > /dev/null 2>&1
 IMAGE_ID=$(openstack image list | grep ${IMAGE_NAME} | awk '{print $2}' -)
 PRIMARY_NETWORK_ID=$(openstack network list | grep ${PRIMARY_NETWORK} | awk '{print $2}' -)
 #NET2_ID=$(openstack network show -f value -c id )
-
+echo PRIMARY_NETWORK_ID
 # Checking if the image and network given by the user are correct.
 if [[ -z "${IMAGE_ID}" ]]; then
   printf "\033[0;31mThe image name you provided is not correct.\033[0m\n"
@@ -188,7 +188,7 @@ NETWORKING_SERVICE="${THE_PATH}/services/networkconf.service"
 
 jq --arg v "${IDENTITY}" '.builders[].identity_endpoint = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
 jq --arg v "${IMAGE_ID}" '.builders[].source_image = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
-jq --arg v "${EXTERNAL_NETWORK_ID}" '.builders[].networks[] = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
+jq --arg v "${PRIMARY_NETWORK_ID}" '.builders[].networks[] = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
 jq --arg v "${TUNNEL_SCRIPT}" '.provisioners[0].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
 jq --arg v "${TUNNEL_SERVICE}" '.provisioners[1].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
 jq --arg v "${NETWORKING_SCRIPT}" '.provisioners[2].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
