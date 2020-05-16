@@ -216,7 +216,7 @@ sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' ${THE_PATH}/services/tunnelcreator.sh
 sed -i '6s/.*/USERNAME='"${FILENAME}"'/' ${THE_PATH}/services/tunnelcreator.sh
 
 echo "Building image... This might take some time, depending on your hardware and your Internet connection."
-packer build ${THE_PATH}/packerfiles/imagebuild.json > /dev/null 2>&1
+packer build ${THE_PATH}/packerfiles/imagebuild.json
 printf "\033[0;32mCreated image: packerimage.\n\033[0mRun 'openstack image list' for confirmation.\n"
 
 printf "\nCreating server for Open vSwitch...\n"
