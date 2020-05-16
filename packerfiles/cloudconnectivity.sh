@@ -168,8 +168,8 @@ openstack subnet create internal --network internal --subnet-range 192.168.1.0/2
 openstack subnet create net2 --network net2 --subnet-range 192.168.2.0/24 --dhcp --gateway none
 openstack subnet create net3 --network net3 --subnet-range 192.168.3.0/24 --dhcp --gateway none
 openstack subnet create net4 --network net4 --subnet-range 192.168.4.0/24 --dhcp --gateway none
-openstack router set router1 --external-gateway public
-openstack router add subnet router1 external
+openstack router set ROUTER --external-gateway public
+openstack router add subnet ROUTER external
 
 
 # Converting image and network names to ID's, so they can be passed to the JSON file that will be used by Packer.
