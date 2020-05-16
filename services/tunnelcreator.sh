@@ -38,21 +38,21 @@ if [[ -f "$FILE" ]]; then
         sudo ovs-vsctl add-port br1 ens5
         ip addr add ${IN_NET_IP2} dev br1
         ip link set br1 up
-        sudo ovs-vsctl add-port br1 vxlan0 -- set interface vxlan0 type=vxlan options:remote_ip=${VTEP_IP}
+        sudo ovs-vsctl add-port br1 vxlan1 -- set interface vxlan1 type=vxlan options:remote_ip=${VTEP_IP}
 
         sudo ovs-vsctl add-br br2
         ip addr flush dev ens6
         sudo ovs-vsctl add-port br2 ens6
         ip addr add ${IN_NET_IP3} dev br2
         ip link set br2 up
-        sudo ovs-vsctl add-port br2 vxlan0 -- set interface vxlan0 type=vxlan options:remote_ip=${VTEP_IP}
+        sudo ovs-vsctl add-port br2 vxlan2 -- set interface vxlan2 type=vxlan options:remote_ip=${VTEP_IP}
 
         sudo ovs-vsctl add-br br3
         ip addr flush dev ens7
-        sudo ovs-vsctl add-port br3 ens4
+        sudo ovs-vsctl add-port br3 ens7
         ip addr add ${IN_NET_IP4} dev br3
         ip link set br3 up
-        sudo ovs-vsctl add-port br3 vxlan0 -- set interface vxlan0 type=vxlan options:remote_ip=${VTEP_IP}
+        sudo ovs-vsctl add-port br3 vxlan3 -- set interface vxlan3 type=vxlan options:remote_ip=${VTEP_IP}
         openvpn /home/ubuntu/${USERNAME}/${USERNAME}.ovpn 
     fi
 fi
