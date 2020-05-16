@@ -151,7 +151,7 @@ if ! [[ ${VPN_IP} =~ ${IP_RE} ]]; then
   exit 1
 fi
 
-sudo openstack << EOF
+sudo bash -c openstack << EOF
   network create internal_network1 --provider-network-type vxlan > /dev/null 2>&1
   network create internal_network2 --provider-network-type vxlan > /dev/null 2>&1
   network create internal_network3 --provider-network-type vxlan > /dev/null 2>&1
@@ -210,7 +210,7 @@ printf "\nCreating server for Open vSwitch...\n"
 SERVER_ID=$(openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network $EXTERNAL_NETWORK_ID --network $PRIMARY_NETWORK_ID --network internal_network2 --network internal_network3 --network internal_network4 OVSmachine | grep " id " | awk '{print $4}' -)
 printf "\n\033[0;32mCreated server 'OVSmachine'.\033[0m\nRun 'openstack server list' for confirmation.\n"
 
-sudo openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR << EOF
+sudo bash -c openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR << EOF
   --network $INTERNAL_NETWORK_ID peer1 > /dev/null 2>&1
   --network net2 peer2 > /dev/null 2>&1
   --network net3 peer3 > /dev/null 2>&1
