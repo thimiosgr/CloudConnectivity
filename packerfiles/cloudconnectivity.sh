@@ -152,17 +152,17 @@ if ! [[ ${VPN_IP} =~ ${IP_RE} ]]; then
 fi
 
 openstack << EOF
-  network create internal_network1 --provider-network-type vxlan
-  network create internal_network2 --provider-network-type vxlan
-  network create internal_network3 --provider-network-type vxlan
-  network create internal_network4 --provider-network-type vxlan
-  router create ROUTER
-  subnet create internal_network1_subnet --network internal_network1 --subnet-range 192.168.1.0/24 --dhcp --dns-nameserver 8.8.8.8 --gateway 192.168.1.1
-  subnet create internal_network2_subnet --network internal_network2 --subnet-range 192.168.2.0/24 --dhcp --gateway none
-  subnet create internal_network3_subnet --network internal_network3 --subnet-range 192.168.3.0/24 --dhcp --gateway none
-  subnet create internal_network4_subnet --network internal_network4 --subnet-range 192.168.4.0/24 --dhcp --gateway none
-  router set ROUTER --external-gateway public
-  router add subnet ROUTER internal_network1_subnet
+  network create internal_network1 --provider-network-type vxlan > /dev/null 2>&1
+  network create internal_network2 --provider-network-type vxlan > /dev/null 2>&1
+  network create internal_network3 --provider-network-type vxlan > /dev/null 2>&1
+  network create internal_network4 --provider-network-type vxlan > /dev/null 2>&1
+  router create ROUTER > /dev/null 2>&1
+  subnet create internal_network1_subnet --network internal_network1 --subnet-range 192.168.1.0/24 --dhcp --dns-nameserver 8.8.8.8 --gateway 192.168.1.1 > /dev/null 2>&1
+  subnet create internal_network2_subnet --network internal_network2 --subnet-range 192.168.2.0/24 --dhcp --gateway none > /dev/null 2>&1
+  subnet create internal_network3_subnet --network internal_network3 --subnet-range 192.168.3.0/24 --dhcp --gateway none > /dev/null 2>&1
+  subnet create internal_network4_subnet --network internal_network4 --subnet-range 192.168.4.0/24 --dhcp --gateway none > /dev/null 2>&1
+  router set ROUTER --external-gateway public > /dev/null 2>&1
+  router add subnet ROUTER internal_network1_subnet > /dev/null 2>&1
 EOF
 
 # Converting image and network names to ID's, so they can be passed to the JSON file that will be used by Packer.
