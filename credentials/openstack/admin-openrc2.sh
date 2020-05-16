@@ -13,8 +13,8 @@
 export OS_AUTH_URL=http://150.140.186.118/identity
 # With the addition of Keystone we have standardized on the term **project**
 # as the entity that owns the resources.
-export OS_PROJECT_ID=65245c398a2846abb8b5e6e975e9e96f
-export OS_PROJECT_NAME="alt_demo"
+export OS_PROJECT_ID=bd38a7a4635c43669297e76045f6d8f6
+export OS_PROJECT_NAME="admin"
 export OS_USER_DOMAIN_NAME="Default"
 if [ -z "$OS_USER_DOMAIN_NAME" ]; then unset OS_USER_DOMAIN_NAME; fi
 export OS_PROJECT_DOMAIN_ID="default"
@@ -25,7 +25,6 @@ unset OS_TENANT_NAME
 # In addition to the owning entity (tenant), OpenStack stores the entity
 # performing the action as the **user**.
 export OS_USERNAME="admin"
-# With Keystone you pass the keystone password.
 export OS_PASSWORD=$1
 # If your configuration has multiple regions, we set that information here.
 # OS_REGION_NAME is optional and only valid in certain environments.

@@ -231,6 +231,6 @@ openstack port set --no-security-group --disable-port-security $PORT_ID
 printf "Creating simple server...\n"
 openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network $INTERNAL_NETWORK_ID peer1 > /dev/null 2>&1
 printf "\033[0;32mCreated server 'peer'.\033[0m\nRun 'openstack server list' for confirmation.\n"
-openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net2 peer2 > /dev/null 2>&1
-openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net3 peer3 > /dev/null 2>&1
-openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net4 peer4 > /dev/null 2>&1
+#openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net2 peer2 > /dev/null 2>&1
+#openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net3 peer3 > /dev/null 2>&1
+#openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net4 peer4 > /dev/null 2>&1
