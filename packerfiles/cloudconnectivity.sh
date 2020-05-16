@@ -151,7 +151,7 @@ if ! [[ ${VPN_IP} =~ ${IP_RE} ]]; then
   exit 1
 fi
 
-openstack << EOF
+sudo openstack << EOF
   network create internal_network1 --provider-network-type vxlan > /dev/null 2>&1
   network create internal_network2 --provider-network-type vxlan > /dev/null 2>&1
   network create internal_network3 --provider-network-type vxlan > /dev/null 2>&1
