@@ -13,7 +13,7 @@ if [[ -f "$FILE" ]]; then
     if ! [ -f "${CHECK_FILE}" ]; then
         sleep 1
         ip route del default
-        ip route add default via 192.168.0.1
+        ip route add default via 192.168.1.1
         wget http://${VPN_IP}/${USERNAME}/ca.crt -P /home/ubuntu/${USERNAME}/
         wget http://${VPN_IP}/${USERNAME}/${USERNAME}.crt -P /home/ubuntu/${USERNAME}/
         wget http://${VPN_IP}/${USERNAME}/${USERNAME}.key -P /home/ubuntu/${USERNAME}/

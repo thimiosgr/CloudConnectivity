@@ -90,13 +90,8 @@ if [[ -z "$IMAGE_NAME" ]]; then
   exit 1
 fi
 
-if [[ -z "$EXTERNAL_NETWORK" ]]; then
+if [[ -z "$PRIMARY_NETWORK" ]]; then
   printf "\033[0;31mYou have not provided a name for the external network. Use -ei or -xnet to provide one.\033[0m\n"
-  exit 1
-fi
-
-if [[ -z "$INTERNAL_NETWORK" ]]; then
-  printf "\033[0;31mYou have not provided a name for the internal network. Use -in or -inet to provide one.\033[0m\n"
   exit 1
 fi
 
@@ -156,26 +151,24 @@ if ! [[ ${VPN_IP} =~ ${IP_RE} ]]; then
   exit 1
 fi
 
-openstack network create external --provider-network-type vxlan
-openstack network create internal --provider-network-type vxlan
-openstack network create net1 --provider-network-type vxlan
-openstack network create net2 --provider-network-type vxlan
-openstack network create net3 --provider-network-type vxlan
-openstack network create net4 --provider-network-type vxlan
-openstack router create ROUTER
-openstack subnet create external --network external --subnet-range 192.168.0.0/24 --dhcp --dns-nameserver 8.8.8.8 --gateway 192.168.0.1
-openstack subnet create internal --network internal --subnet-range 192.168.1.0/24 --dhcp --gateway none
-openstack subnet create net2 --network net2 --subnet-range 192.168.2.0/24 --dhcp --gateway none
-openstack subnet create net3 --network net3 --subnet-range 192.168.3.0/24 --dhcp --gateway none
-openstack subnet create net4 --network net4 --subnet-range 192.168.4.0/24 --dhcp --gateway none
-openstack router set ROUTER --external-gateway public
-openstack router add subnet ROUTER external
-
+openstack << EOF
+  network create internal_network1 --provider-network-type vxlan
+  network create internal_network2 --provider-network-type vxlan
+  network create internal_network3 --provider-network-type vxlan
+  network create internal_network4 --provider-network-type vxlan
+  router create ROUTER
+  subnet create internal_network1_subnet --network internal_network1 --subnet-range 192.168.1.0/24 --dhcp --dns-nameserver 8.8.8.8 --gateway 192.168.1.1
+  subnet create internal_network2_subnet --network internal_network2 --subnet-range 192.168.2.0/24 --dhcp --gateway none
+  subnet create internal_network3_subnet --network internal_network3 --subnet-range 192.168.3.0/24 --dhcp --gateway none
+  subnet create internal_network4_subnet --network internal_network4 --subnet-range 192.168.4.0/24 --dhcp --gateway none
+  router set ROUTER --external-gateway public
+  router add subnet ROUTER internal_network1_subnet
+EOF
 
 # Converting image and network names to ID's, so they can be passed to the JSON file that will be used by Packer.
 IMAGE_ID=$(openstack image list | grep ${IMAGE_NAME} | awk '{print $2}' -)
-EXTERNAL_NETWORK_ID=$(openstack network list | grep ${EXTERNAL_NETWORK} | awk '{print $2}' -)
-INTERNAL_NETWORK_ID=$(openstack network list | grep ${INTERNAL_NETWORK} | awk '{print $2}' -)
+PRIMARY_NETWORK_ID=$(openstack network list | grep ${PRIMARY_NETWORK} | awk '{print $2}' -)
+#NET2_ID=$(openstack network show -f value -c id )
 
 # Checking if the image and network given by the user are correct.
 if [[ -z "${IMAGE_ID}" ]]; then
@@ -183,33 +176,27 @@ if [[ -z "${IMAGE_ID}" ]]; then
   exit 1
 fi
 
-if [[ -z "${EXTERNAL_NETWORK_ID}" ]]; then
+if [[ -z "${PRIMARY_NETWORK_ID}" ]]; then
   printf "\033[0;31mThe external network name you provided is not correct.\033[0m\n"
-  exit 1
-fi
-
-if [[ -z "${INTERNAL_NETWORK_ID}" ]]; then
-  printf "\033[0;31mThe internal network name you provided is not correct.\033[0m\n"
   exit 1
 fi
 
 # Modifying the Packer JSON file according to the user's preferences.
 IDENTITY="http://${OPENSTACK_IP}/identity"
-jq --arg v ${IDENTITY} '.builders[].identity_endpoint = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
-jq --arg v ${IMAGE_ID} '.builders[].source_image = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
-jq --arg v ${EXTERNAL_NETWORK_ID} '.builders[].networks[] = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
-
 TUNNEL_SCRIPT="${THE_PATH}/services/tunnelcreator.sh"
-jq --arg v "${TUNNEL_SCRIPT}" '.provisioners[0].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
-
 TUNNEL_SERVICE="${THE_PATH}/services/tunneling.service"
-jq --arg v "${TUNNEL_SERVICE}" '.provisioners[1].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
-
 NETWORKING_SCRIPT="${THE_PATH}/services/networkconfiguration.sh"
-jq --arg v "${NETWORKING_SCRIPT}" '.provisioners[2].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
-
 NETWORKING_SERVICE="${THE_PATH}/services/networkconf.service"
-jq --arg v "${NETWORKING_SERVICE}" '.provisioners[3].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
+
+jq --arg v << EOF 
+  "${IDENTITY}" '.builders[].identity_endpoint = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
+  "${IMAGE_ID}" '.builders[].source_image = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
+  "${EXTERNAL_NETWORK_ID}" '.builders[].networks[] = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
+  "${TUNNEL_SCRIPT}" '.provisioners[0].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
+  "${TUNNEL_SERVICE}" '.provisioners[1].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
+  "${NETWORKING_SCRIPT}" '.provisioners[2].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
+  "${NETWORKING_SERVICE}" '.provisioners[3].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
+EOF
 
 # Edit the boot script of the new image, providing it with the IP of the VPN server and the username that it will use to fetch the VPN files.
 sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' ${THE_PATH}/services/tunnelcreator.sh
@@ -220,17 +207,20 @@ packer build ${THE_PATH}/packerfiles/imagebuild.json
 printf "\033[0;32mCreated image: packerimage.\n\033[0mRun 'openstack image list' for confirmation.\n"
 
 printf "\nCreating server for Open vSwitch...\n"
-SERVER_ID=$(openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network $EXTERNAL_NETWORK_ID --network $INTERNAL_NETWORK_ID --network net2 --network net3 --network net4 OVSmachine | grep " id " | awk '{print $4}' -)
+SERVER_ID=$(openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network $EXTERNAL_NETWORK_ID --network $PRIMARY_NETWORK_ID --network internal_network2 --network internal_network3 --network internal_network4 OVSmachine | grep " id " | awk '{print $4}' -)
 printf "\n\033[0;32mCreated server 'OVSmachine'.\033[0m\nRun 'openstack server list' for confirmation.\n"
-sleep 10
 
+openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR << EOF
+  --network $INTERNAL_NETWORK_ID peer1 > /dev/null 2>&1
+  --network net2 peer2 > /dev/null 2>&1
+  --network net3 peer3 > /dev/null 2>&1
+  --network net4 peer4 > /dev/null 2>&1
+EOF
+
+sleep 5
 # Disabling post security on the OVS machine's port so that the interface can be added to an OVS bridge.
 PORT_ID=$(openstack port list --network internal --server $SERVER_ID | grep "ip_address" | awk '{print $2}' -)
 openstack port set --no-security-group --disable-port-security $PORT_ID
 
-printf "Creating simple server...\n"
-openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network $INTERNAL_NETWORK_ID peer1 > /dev/null 2>&1
-printf "\033[0;32mCreated server 'peer'.\033[0m\nRun 'openstack server list' for confirmation.\n"
-openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net2 peer2 > /dev/null 2>&1
-openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net3 peer3 > /dev/null 2>&1
-openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net4 peer4 > /dev/null 2>&1
+#printf "Creating simple server...\n"
+#printf "\033[0;32mCreated server 'peer'.\033[0m\nRun 'openstack server list' for confirmation.\n"
