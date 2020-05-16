@@ -167,7 +167,7 @@ openstack router add subnet ROUTER internal_network1_subnet > /dev/null 2>&1
 IMAGE_ID=$(openstack image list | grep ${IMAGE_NAME} | awk '{print $2}' -)
 PRIMARY_NETWORK_ID=$(openstack network list | grep ${PRIMARY_NETWORK} | awk '{print $2}' -)
 #NET2_ID=$(openstack network show -f value -c id )
-echo PRIMARY_NETWORK_ID
+
 # Checking if the image and network given by the user are correct.
 if [[ -z "${IMAGE_ID}" ]]; then
   printf "\033[0;31mThe image name you provided is not correct.\033[0m\n"
