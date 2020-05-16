@@ -156,6 +156,21 @@ if ! [[ ${VPN_IP} =~ ${IP_RE} ]]; then
   exit 1
 fi
 
+openstack network create external --provider-network-type vxlan
+openstack network create internal --provider-network-type vxlan
+openstack network create net1 --provider-network-type vxlan
+openstack network create net2 --provider-network-type vxlan
+openstack network create net3 --provider-network-type vxlan
+openstack router create router1
+openstack subnet create external --network external --subnet-range 192.168.0.0/24 --dhcp
+openstack subnet create internal --network internal --subnet-range 192.168.1.0/24 --dhcp --gateway none
+openstack subnet create net2 --network net2 --subnet-range 192.168.2.0/24 --dhcp --gateway none
+openstack subnet create net3 --network net3 --subnet-range 192.168.3.0/24 --dhcp --gateway none
+openstack subnet create net4 --network net4 --subnet-range 192.168.4.0/24 --dhcp --gateway none
+openstack router set router1 --external-gateway public
+openstack router add subnet router1 external
+
+
 # Converting image and network names to ID's, so they can be passed to the JSON file that will be used by Packer.
 IMAGE_ID=$(openstack image list | grep ${IMAGE_NAME} | awk '{print $2}' -)
 EXTERNAL_NETWORK_ID=$(openstack network list | grep ${EXTERNAL_NETWORK} | awk '{print $2}' -)
@@ -204,7 +219,7 @@ packer build ${THE_PATH}/packerfiles/imagebuild.json > /dev/null 2>&1
 printf "\033[0;32mCreated image: packerimage.\n\033[0mRun 'openstack image list' for confirmation.\n"
 
 printf "\nCreating server for Open vSwitch...\n"
-SERVER_ID=$(openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network $EXTERNAL_NETWORK_ID --network $INTERNAL_NETWORK_ID OVSmachine | grep " id " | awk '{print $4}' -)
+SERVER_ID=$(openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network $EXTERNAL_NETWORK_ID --network $INTERNAL_NETWORK_ID --network internal --network net2 --network net3 --network net4 OVSmachine | grep " id " | awk '{print $4}' -)
 printf "\n\033[0;32mCreated server 'OVSmachine'.\033[0m\nRun 'openstack server list' for confirmation.\n"
 sleep 10
 
@@ -213,5 +228,8 @@ PORT_ID=$(openstack port list --network internal --server $SERVER_ID | grep "ip_
 openstack port set --no-security-group --disable-port-security $PORT_ID
 
 printf "Creating simple server...\n"
-openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network $INTERNAL_NETWORK_ID peer > /dev/null 2>&1
+openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network $INTERNAL_NETWORK_ID peer1 > /dev/null 2>&1
 printf "\033[0;32mCreated server 'peer'.\033[0m\nRun 'openstack server list' for confirmation.\n"
+openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net2 peer2 > /dev/null 2>&1
+openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net3 peer3 > /dev/null 2>&1
+openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net4 peer4 > /dev/null 2>&1
