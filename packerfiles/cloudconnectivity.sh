@@ -152,17 +152,17 @@ if ! [[ ${VPN_IP} =~ ${IP_RE} ]]; then
 fi
 
 openstack << EOF
-  network create internal_network1 --provider-network-type vxlan >/dev/null 
-  network create internal_network2 --provider-network-type vxlan >/dev/null
-  network create internal_network3 --provider-network-type vxlan >/dev/null
-  network create internal_network4 --provider-network-type vxlan >/dev/null
-  router create ROUTER >/dev/null
-  subnet create internal_network1_subnet --network internal_network1 --subnet-range 192.168.1.0/24 --dhcp --dns-nameserver 8.8.8.8 --gateway 192.168.1.1 >/dev/null
-  subnet create internal_network2_subnet --network internal_network2 --subnet-range 192.168.2.0/24 --dhcp --gateway none >/dev/null
-  subnet create internal_network3_subnet --network internal_network3 --subnet-range 192.168.3.0/24 --dhcp --gateway none >/dev/null
-  subnet create internal_network4_subnet --network internal_network4 --subnet-range 192.168.4.0/24 --dhcp --gateway none >/dev/null
-  router set ROUTER --external-gateway public >/dev/null
-  router add subnet ROUTER internal_network1_subnet >/dev/null
+  network create internal_network1 --provider-network-type vxlan > /dev/null 
+  network create internal_network2 --provider-network-type vxlan > /dev/null
+  network create internal_network3 --provider-network-type vxlan > /dev/null
+  network create internal_network4 --provider-network-type vxlan > /dev/null
+  router create ROUTER > /dev/null
+  subnet create internal_network1_subnet --network internal_network1 --subnet-range 192.168.1.0/24 --dhcp --dns-nameserver 8.8.8.8 --gateway 192.168.1.1 > /dev/null
+  subnet create internal_network2_subnet --network internal_network2 --subnet-range 192.168.2.0/24 --dhcp --gateway none > /dev/null
+  subnet create internal_network3_subnet --network internal_network3 --subnet-range 192.168.3.0/24 --dhcp --gateway none > /dev/null
+  subnet create internal_network4_subnet --network internal_network4 --subnet-range 192.168.4.0/24 --dhcp --gateway none > /dev/null
+  router set ROUTER --external-gateway public > /dev/null
+  router add subnet ROUTER internal_network1_subnet > /dev/null
 EOF
 
 # Converting image and network names to ID's, so they can be passed to the JSON file that will be used by Packer.
@@ -211,10 +211,10 @@ SERVER_ID=$(openstack server create --image packerimage --flavor m1.heat_int --k
 printf "\n\033[0;32mCreated server 'OVSmachine'.\033[0m\nRun 'openstack server list' for confirmation.\n"
 
 sudo bash -c openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR << EOF
-  --network $INTERNAL_NETWORK_ID peer1 > /dev/null 2>&1
-  --network net2 peer2 >/dev/null
-  --network net3 peer3 >/dev/null
-  --network net4 peer4 >/dev/null
+  --network $INTERNAL_NETWORK_ID peer1 > /dev/null
+  --network net2 peer2 > /dev/null
+  --network net3 peer3 > /dev/null
+  --network net4 peer4 > /dev/null
 EOF
 
 sleep 5
