@@ -162,7 +162,7 @@ openstack network create net1 --provider-network-type vxlan
 openstack network create net2 --provider-network-type vxlan
 openstack network create net3 --provider-network-type vxlan
 openstack network create net4 --provider-network-type vxlan
-openstack router create router1
+openstack router create ROUTER
 openstack subnet create external --network external --subnet-range 192.168.0.0/24 --dhcp --dns-nameserver 8.8.8.8 --gateway 192.168.0.1
 openstack subnet create internal --network internal --subnet-range 192.168.1.0/24 --dhcp --gateway none
 openstack subnet create net2 --network net2 --subnet-range 192.168.2.0/24 --dhcp --gateway none
@@ -220,7 +220,7 @@ packer build ${THE_PATH}/packerfiles/imagebuild.json
 printf "\033[0;32mCreated image: packerimage.\n\033[0mRun 'openstack image list' for confirmation.\n"
 
 printf "\nCreating server for Open vSwitch...\n"
-SERVER_ID=$(openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network $EXTERNAL_NETWORK_ID --network $INTERNAL_NETWORK_ID --network internal --network net2 --network net3 --network net4 OVSmachine | grep " id " | awk '{print $4}' -)
+SERVER_ID=$(openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network $EXTERNAL_NETWORK_ID --network $INTERNAL_NETWORK_ID --network net2 --network net3 --network net4 OVSmachine | grep " id " | awk '{print $4}' -)
 printf "\n\033[0;32mCreated server 'OVSmachine'.\033[0m\nRun 'openstack server list' for confirmation.\n"
 sleep 10
 
@@ -231,6 +231,6 @@ openstack port set --no-security-group --disable-port-security $PORT_ID
 printf "Creating simple server...\n"
 openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network $INTERNAL_NETWORK_ID peer1 > /dev/null 2>&1
 printf "\033[0;32mCreated server 'peer'.\033[0m\nRun 'openstack server list' for confirmation.\n"
-#openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net2 peer2 > /dev/null 2>&1
-#openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net3 peer3 > /dev/null 2>&1
-#openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net4 peer4 > /dev/null 2>&1
+openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net2 peer2 > /dev/null 2>&1
+openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net3 peer3 > /dev/null 2>&1
+openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network net4 peer4 > /dev/null 2>&1
