@@ -161,6 +161,7 @@ openstack network create internal --provider-network-type vxlan
 openstack network create net1 --provider-network-type vxlan
 openstack network create net2 --provider-network-type vxlan
 openstack network create net3 --provider-network-type vxlan
+openstack network create net4 --provider-network-type vxlan
 openstack router create router1
 openstack subnet create external --network external --subnet-range 192.168.0.0/24 --dhcp
 openstack subnet create internal --network internal --subnet-range 192.168.1.0/24 --dhcp --gateway none
