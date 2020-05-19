@@ -206,9 +206,9 @@ printf "\nCreating server for Open vSwitch...\n"
 SERVER_ID=$(openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network internal_network1 --network internal_network2 --network internal_network3 --network internal_network4 OVSmachine | grep " id " | awk '{print $4}' -)
 printf "\n\033[0;32mCreated server 'OVSmachine'.\033[0m\nRun 'openstack server list' for confirmation.\n"
 
-openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network internal_network2 peer2 > /dev/null 2>&1
-openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network internal_network3 peer3 > /dev/null 2>&1
-openstack server create --image xenial1 --flavor m1.heat_int --key-name KEYPAIR --network internal_network4 peer4 > /dev/null 2>&1
+openstack server create --image xenial1 --flavor m1.micro --key-name KEYPAIR --network internal_network2 peer2 > /dev/null 2>&1
+openstack server create --image xenial1 --flavor m1.micro --key-name KEYPAIR --network internal_network3 peer3 > /dev/null 2>&1
+openstack server create --image xenial1 --flavor m1.micro --key-name KEYPAIR --network internal_network4 peer4 > /dev/null 2>&1
 
 sleep 7
 # Disabling post security on the OVS machine's port so that the interface can be added to an OVS bridge.
