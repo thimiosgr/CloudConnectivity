@@ -35,7 +35,6 @@ while (( "$#" )); do
     -def | -default)
       source ${THE_PATH}/credentials/vars/openstack2.sh
       source ${THE_PATH}/credentials/openstack/admin-openrc2.sh ${PASSWD}
-      fi
       break
       ;;
     -h | -help)
