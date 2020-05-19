@@ -33,7 +33,7 @@ while (( "$#" )); do
       shift 2
       ;;
     -def | -default)
-      IP=$(ifconfig | grep "150.140.186" | awk '{print $2}' -)
+      IP=$(ifconfig | grep "255.255.255.128" | awk '{print $2}' -)
       if [[ $IP == "150.140.186.115" ]]; then
         source ${THE_PATH}/credentials/vars/openstack1.sh
         source ${THE_PATH}/credentials/openstack/admin-openrc1.sh ${PASSWD}
