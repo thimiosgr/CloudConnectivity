@@ -29,16 +29,16 @@
         "type": "shell",
         "inline_shebang": "/bin/bash -e",
         "inline": [
-          "sleep 5",
+          "sleep 1",
           "sudo bash -c 'echo \"net.ipv4.ip_forward=1\" >> /etc/sysctl.conf' 2>&1",
-          "sudo mv webserver.sh /usr/local/bin > /dev/null 2>&1",
-          "sudo chmod 755 /usr/local/bin/webserver.sh > /dev/null 2>&1",
-          "sudo mv webserver.service /etc/systemd/system > /dev/null 2>&1",
-          "sudo chmod 664 /etc/systemd/system/webserver.service > /dev/null 2>&1",
-          "sudo systemctl daemon-reload > /dev/null 2>&1",
-          "sudo systemctl enable webserver.service > /dev/null 2>&1",
-          "sudo apt update > /dev/null 2>&1",
-          "sudo apt install python -y > /dev/null 2>&1"
+          "sudo mv webserver.sh /usr/local/bin",
+          "sudo chmod 755 /usr/local/bin/webserver.sh",
+          "sudo mv webserver.service /etc/systemd/system",
+          "sudo chmod 664 /etc/systemd/system/webserver.service",
+          "sudo systemctl daemon-reload",
+          "sudo systemctl enable webserver.service",
+          "sudo apt update",
+          "sudo apt install python -y"
         ]
       }
     ]
