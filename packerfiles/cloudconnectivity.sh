@@ -2,6 +2,8 @@
 
 THE_PATH="$(pwd)/CloudConnectivity"
 PARAMS=""
+declare -a OPENSTACK_ARR
+
 while (( "$#" )); do
   case "$1" in
     -oi | -opip)
@@ -46,7 +48,6 @@ while (( "$#" )); do
     -*|--*=) # unsupported flags
       echo "Error: Unsupported flag $1" >&2
       COUNTER=1
-      exit 1
       ;;
     *) # preserve positional arguments
       PARAMS="${PARAMS} $1"
@@ -147,10 +148,14 @@ if ! [[ ${VPN_IP} =~ ${IP_RE} ]]; then
   exit 1
 fi
 
+# Openstack networks configuration
 PRIMARY_NETWORK_ID=$(openstack network create primary_network --provider-network-type vxlan | grep " id " | awk '{print $4}' -)
 INTERNAL_NETWORK1_ID=$(openstack network create internal_network1 --provider-network-type vxlan --disable-port-security | grep " id " | awk '{print $4}' -)
+OPENSTACK_ARR[0]=$INTERNAL_NETWORK1_ID
 INTERNAL_NETWORK2_ID=$(openstack network create internal_network2 --provider-network-type vxlan --disable-port-security | grep " id " | awk '{print $4}' -)
+OPENSTACK_ARR[1]=$INTERNAL_NETWORK2_ID
 INTERNAL_NETWORK3_ID=$(openstack network create internal_network3 --provider-network-type vxlan --disable-port-security | grep " id " | awk '{print $4}' -)
+OPENSTACK_ARR[2]=$INTERNAL_NETWORK3_ID
 ROUTER_ID=$(openstack router create ROUTER | grep " id " | awk '{print $4}' -)
 PRIMARY_NETWORK_SUBNET_ID=$(openstack subnet create primary_network_subnet --network $PRIMARY_NETWORK_ID --subnet-range 192.168.0.0/24 --dhcp --dns-nameserver 8.8.8.8 --gateway 192.168.0.1  | grep " id " | awk '{print $4}' -)
 openstack subnet create internal_network1_subnet --network $INTERNAL_NETWORK1_ID --subnet-range 192.168.1.0/24 --dhcp --gateway none > /dev/null 2>&1
@@ -161,7 +166,6 @@ openstack router add subnet $ROUTER_ID $PRIMARY_NETWORK_SUBNET_ID  > /dev/null 2
 
 # Converting image and network names to ID's, so they can be passed to the JSON file that will be used by Packer.
 IMAGE_ID=$(openstack image list | grep ${IMAGE_NAME} | awk '{print $2}' -)
-#NET2_ID=$(openstack network show -f value -c id )
 
 # Checking if the image and network given by the user are correct.
 if [[ -z "${IMAGE_ID}" ]]; then
@@ -199,20 +203,20 @@ printf "\033[0;32mCreated image: packerimage.\n\033[0mRun 'openstack image list'
 
 printf "\nCreating server for Open vSwitch...\n"
 SERVER_ID=$(openstack server create --image packerimage --flavor ds512M --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network ${PRIMARY_NETWORK_ID} --network ${INTERNAL_NETWORK1_ID} --network ${INTERNAL_NETWORK2_ID} --network ${INTERNAL_NETWORK3_ID} OVSmachine | grep " id " | awk '{print $4}' -)
-printf "\n\033[0;32mCreated server 'OVSmachine'.\033[0m\nRun 'openstack server list' for confirmation.\n"
+printf "\033[0;32mCreated server 'OVSmachine'.\033[0m\nRun 'openstack server list' for confirmation.\n"
+
+printf "Creating instances on each internal network...\n"
+COUNTER=0
+while [ "$COUNTER" -lt "${#OPENSTACK_ARR[@]}" ]; 
+do
+  for i in $(seq 1 10)
+  do
+    openstack server create --image $IMAGE_ID --flavor m1.heat_int --key-name KEYPAIR --network ${OPENSTACK_ARR[COUNTER]} test_instances
+  done
+COUNTER=$((COUNTER+1))
+done
 
 openstack server create --image $IMAGE_ID --flavor m1.heat_int --key-name KEYPAIR --network $INTERNAL_NETWORK1_ID peer1 > /dev/null 2>&1
 openstack server create --image $IMAGE_ID --flavor m1.heat_int --key-name KEYPAIR --network $INTERNAL_NETWORK2_ID peer2 > /dev/null 2>&1
 openstack server create --image $IMAGE_ID --flavor m1.heat_int --key-name KEYPAIR --network $INTERNAL_NETWORK3_ID peer3 > /dev/null 2>&1
-
-# sleep 7
-# # Disabling post security on the OVS machine's port so that the interface can be added to an OVS bridge.
-# PORT_ID=$(openstack port list --network $INTERNAL_NETWORK1_ID --server $SERVER_ID | grep "ip_address" | awk '{print $2}' -)
-# openstack port set --no-security-group --disable-port-security $PORT_ID
-# PORT_ID=$(openstack port list --network $INTERNAL_NETWORK2_ID --server $SERVER_ID | grep "ip_address" | awk '{print $2}' -)
-# openstack port set --no-security-group --disable-port-security $PORT_ID
-# PORT_ID=$(openstack port list --network $INTERNAL_NETWORK3_ID --server $SERVER_ID | grep "ip_address" | awk '{print $2}' -)
-# openstack port set --no-security-group --disable-port-security $PORT_ID
-
-#printf "Creating simple server...\n"
-#printf "\033[0;32mCreated server 'peer'.\033[0m\nRun 'openstack server list' for confirmation.\n"
+printf "Done"
