@@ -152,7 +152,7 @@ INTERNAL_NETWORK1_ID=$(openstack network create internal_network1 --provider-net
 INTERNAL_NETWORK2_ID=$(openstack network create internal_network2 --provider-network-type vxlan | grep " id " | awk '{print $4}' -)
 INTERNAL_NETWORK3_ID=$(openstack network create internal_network4 --provider-network-type vxlan | grep " id " | awk '{print $4}' -)
 ROUTER_ID=$(openstack router create ROUTER | grep " id " | awk '{print $4}' -)
-PRIMARY_NETWORK_SUBNET_ID=$(openstack subnet create primary_network_subnet --network $INTERNAL_NETWORK1_ID --subnet-range 192.168.0.0/24 --dhcp --dns-nameserver 8.8.8.8 --gateway 192.168.0.1  | grep " id " | awk '{print $4}' -)
+PRIMARY_NETWORK_SUBNET_ID=$(openstack subnet create primary_network_subnet --network $PRIMARY_NETWORK_ID --subnet-range 192.168.0.0/24 --dhcp --dns-nameserver 8.8.8.8 --gateway 192.168.0.1  | grep " id " | awk '{print $4}' -)
 openstack subnet create internal_network1_subnet --network $INTERNAL_NETWORK1_ID --subnet-range 192.168.1.0/24 --dhcp --gateway none > /dev/null 2>&1
 openstack subnet create internal_network2_subnet --network $INTERNAL_NETWORK2_ID --subnet-range 192.168.2.0/24 --dhcp --gateway none > /dev/null 2>&1
 openstack subnet create internal_network2_subnet --network $INTERNAL_NETWORK3_ID --subnet-range 192.168.3.0/24 --dhcp --gateway none > /dev/null 2>&1
