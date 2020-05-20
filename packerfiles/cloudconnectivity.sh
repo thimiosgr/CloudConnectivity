@@ -211,7 +211,7 @@ while [ "$COUNTER" -lt "${#OPENSTACK_ARR[@]}" ];
 do
   for i in $(seq 1 5)
   do
-    openstack server create --image cirros-0.4.0-x86_64-disk --flavor m1.nano --network ${OPENSTACK_ARR[COUNTER]} test_instance
+    openstack server create --image cirros-0.4.0-x86_64-disk --flavor m1.nano --network ${OPENSTACK_ARR[COUNTER]} > /dev/null 2>&1
   done
 COUNTER=$((COUNTER+1))
 done
