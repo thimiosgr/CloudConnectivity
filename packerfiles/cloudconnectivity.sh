@@ -102,7 +102,7 @@ if [[ -z "$FILENAME" ]]; then
   EXIT_INT=1
 fi
 
-if [[ EXIT_INT==1 ]]; then
+if [[ ${EXIT_INT}==1 ]]; then
   exit 1
 fi
 
