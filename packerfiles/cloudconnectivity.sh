@@ -156,11 +156,17 @@ INTERNAL_NETWORK2_ID=$(openstack network create internal_network2 --provider-net
 OPENSTACK_ARR[1]=$INTERNAL_NETWORK2_ID
 INTERNAL_NETWORK3_ID=$(openstack network create internal_network3 --provider-network-type vxlan --disable-port-security | grep " id " | awk '{print $4}' -)
 OPENSTACK_ARR[2]=$INTERNAL_NETWORK3_ID
+INTERNAL_NETWORK4_ID=$(openstack network create internal_network4 --provider-network-type vxlan --disable-port-security | grep " id " | awk '{print $4}' -)
+OPENSTACK_ARR[3]=$INTERNAL_NETWORK4_ID
+INTERNAL_NETWORK5_ID=$(openstack network create internal_network5 --provider-network-type vxlan --disable-port-security | grep " id " | awk '{print $4}' -)
+OPENSTACK_ARR[4]=$INTERNAL_NETWORK5_ID
 ROUTER_ID=$(openstack router create ROUTER | grep " id " | awk '{print $4}' -)
 PRIMARY_NETWORK_SUBNET_ID=$(openstack subnet create primary_network_subnet --network $PRIMARY_NETWORK_ID --subnet-range 192.168.0.0/24 --dhcp --dns-nameserver 8.8.8.8 --gateway 192.168.0.1  | grep " id " | awk '{print $4}' -)
 openstack subnet create internal_network1_subnet --network $INTERNAL_NETWORK1_ID --subnet-range 192.168.1.0/24 --dhcp --gateway none > /dev/null 2>&1
 openstack subnet create internal_network2_subnet --network $INTERNAL_NETWORK2_ID --subnet-range 192.168.2.0/24 --dhcp --gateway none > /dev/null 2>&1
 openstack subnet create internal_network3_subnet --network $INTERNAL_NETWORK3_ID --subnet-range 192.168.3.0/24 --dhcp --gateway none > /dev/null 2>&1
+openstack subnet create internal_network4_subnet --network $INTERNAL_NETWORK4_ID --subnet-range 192.168.4.0/24 --dhcp --gateway none > /dev/null 2>&1
+openstack subnet create internal_network5_subnet --network $INTERNAL_NETWORK5_ID --subnet-range 192.168.5.0/24 --dhcp --gateway none > /dev/null 2>&1
 openstack router set $ROUTER_ID --external-gateway public > /dev/null 2>&1
 openstack router add subnet $ROUTER_ID $PRIMARY_NETWORK_SUBNET_ID  > /dev/null 2>&1
 
@@ -211,7 +217,8 @@ while [ "$COUNTER" -lt "${#OPENSTACK_ARR[@]}" ];
 do
   for i in $(seq 1 5)
   do
-    openstack server create --image cirros-0.4.0-x86_64-disk --flavor m1.nano --network ${OPENSTACK_ARR[COUNTER]} test_instance > /dev/null 2>&1
+    RANDOM_INTEGER=$(echo $((1 + RANDOM)))
+    openstack server create --image cirros-0.4.0-x86_64-disk --flavor m1.nano --network ${OPENSTACK_ARR[COUNTER]} "test_instance_${RANDOM_INTEGER}" > /dev/null 2>&1
   done
 COUNTER=$((COUNTER+1))
 done
