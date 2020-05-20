@@ -223,7 +223,7 @@ do
   for i in $(seq 1 5)
   do
     RANDOM_INTEGER=$(echo $((1 + RANDOM)))
-    openstack server create --image cirros-0.4.0-x86_64-disk --flavor m1.nano --network ${OPENSTACK_ARR[COUNTER]} "test_instance_${RANDOM_INTEGER}" > /dev/null 2>&1
+    openstack server create --image cirros-0.4.0-x86_64-disk --flavor m1.nano --network ${OPENSTACK_ARR[COUNTER]} "cirros_instance_${RANDOM_INTEGER}" > /dev/null 2>&1
   done
 COUNTER=$((COUNTER+1))
 done
