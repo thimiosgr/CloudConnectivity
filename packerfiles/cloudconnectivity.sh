@@ -191,6 +191,8 @@ TUNNEL_SCRIPT="${THE_PATH}/services/tunnelcreator.sh"
 TUNNEL_SERVICE="${THE_PATH}/services/tunneling.service"
 NETWORKING_SCRIPT="${THE_PATH}/services/networkconfiguration.sh"
 NETWORKING_SERVICE="${THE_PATH}/services/networkconf.service"
+WEBSERVER_SCRIPT="${THE_PATH}/services/webserver.sh"
+WEBSERVER_SERVICE="${THE_PATH}/services/webserver.sh"
 
 jq --arg v "${IDENTITY}" '.builders[].identity_endpoint = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
 jq --arg v "${IMAGE_ID}" '.builders[].source_image = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
@@ -199,6 +201,8 @@ jq --arg v "${TUNNEL_SCRIPT}" '.provisioners[0].source = $v' ${THE_PATH}/packerf
 jq --arg v "${TUNNEL_SERVICE}" '.provisioners[1].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
 jq --arg v "${NETWORKING_SCRIPT}" '.provisioners[2].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
 jq --arg v "${NETWORKING_SERVICE}" '.provisioners[3].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
+jq --arg v "${WEBSERVER_SCRIPT}" '.provisioners[0].source = $v' ${THE_PATH}/packerfiles/webserver.json | sponge ${THE_PATH}/packerfiles/webserver.json
+jq --arg v "${WEBSERVER_SERVICE}" '.provisioners[1].source = $v' ${THE_PATH}/packerfiles/webserver.json | sponge ${THE_PATH}/packerfiles/webserver.json
 
 # Edit the boot script of the new image, providing it with the IP of the VPN server and the username that it will use to fetch the VPN files.
 sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' ${THE_PATH}/services/tunnelcreator.sh
@@ -206,6 +210,7 @@ sed -i '6s/.*/USERNAME='"${FILENAME}"'/' ${THE_PATH}/services/tunnelcreator.sh
 
 echo "Building image... This might take some time, depending on your hardware and your Internet connection."
 packer build ${THE_PATH}/packerfiles/imagebuild.json
+packer build ${THE_PATH}/packerfiles/webserver.json
 printf "\033[0;32mCreated image: packerimage.\n\033[0mRun 'openstack image list' for confirmation.\n"
 
 printf "\nCreating server for Open vSwitch...\n"
@@ -216,11 +221,12 @@ printf "Creating instances on each internal network...\n"
 COUNTER=0
 while [ "$COUNTER" -lt "${#OPENSTACK_ARR[@]}" ]; 
 do
-  for i in $(seq 1 5)
+  for i in $(seq 1 4)
   do
     RANDOM_INTEGER=$(echo $((1 + RANDOM)))
     openstack server create --image cirros-0.4.0-x86_64-disk --flavor m1.nano --network ${OPENSTACK_ARR[COUNTER]} "cirros_instance_${RANDOM_INTEGER}" > /dev/null 2>&1
   done
+  openstack server create --image webserver --flavor ds512M --network ${OPENSTACK_ARR[COUNTER]} "webserver_${RANDOM_INTEGER}" > /dev/null 2>&1
 COUNTER=$((COUNTER+1))
 done
 printf "Done"
