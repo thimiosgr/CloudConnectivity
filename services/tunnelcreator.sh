@@ -10,10 +10,10 @@ CHECK_FILE=/home/ubuntu/${USERNAME}/ca.crt
 FILE=/home/ubuntu/temp
 
 if [[ -f "$FILE" ]]; then
-    if ! [ -f "${CHECK_FILE}" ]; then
+    if [ -f "${CHECK_FILE}" ]; then
         sleep 1
         ip route del default
-        ip route add default via 192.168.1.1
+        ip route add default via 192.168.0.1
         wget http://${VPN_IP}/${USERNAME}/ca.crt -P /home/ubuntu/${USERNAME}/
         wget http://${VPN_IP}/${USERNAME}/${USERNAME}.crt -P /home/ubuntu/${USERNAME}/
         wget http://${VPN_IP}/${USERNAME}/${USERNAME}.key -P /home/ubuntu/${USERNAME}/
@@ -33,21 +33,21 @@ if [[ -f "$FILE" ]]; then
         sudo ovs-vsctl add-br "br${IP1_MD5}"
         ip addr flush dev ens4
         sudo ovs-vsctl add-port "br${IP1_MD5}" ens4
-        sudo ovs-vsctl add-port tunnelbr vxlan0 -- set interface vxlan0 type=vxlan options:remote_ip=${VTEP_IP} options:key=2000
+        sudo ovs-vsctl add-port "br${IP1_MD5}" "vxlan${IP1_MD5}"  -- set interface "vxlan${IP1_MD5}" type=vxlan options:remote_ip=${VTEP_IP} options:key=2000
         ip addr add ${IN_NET_IP1} dev "br${IP1_MD5}"
         ip link set "br${IP1_MD5}" up
 
         sudo ovs-vsctl add-br "br${IP2_MD5}"
         ip addr flush dev ens5
         sudo ovs-vsctl add-port "br${IP2_MD5}" ens5
-        sudo ovs-vsctl add-port tunnelbr vxlan1 -- set interface vxlan1 type=vxlan options:remote_ip=${VTEP_IP} options:key=2001
+        sudo ovs-vsctl add-port "br${IP2_MD5}" "vxlan${IP2_MD5}" -- set interface "vxlan${IP2_MD5}" type=vxlan options:remote_ip=${VTEP_IP} options:key=2001
         ip addr add ${IN_NET_IP2} dev "br${IP2_MD5}"
         ip link set "br${IP2_MD5}" up
 
         sudo ovs-vsctl add-br "br${IP3_MD5}"
         ip addr flush dev ens6
         sudo ovs-vsctl add-port "br${IP3_MD5}" ens6
-        sudo ovs-vsctl add-port tunnelbr vxlan2 -- set interface vxlan2 type=vxlan options:remote_ip=${VTEP_IP} options:key=2002
+        sudo ovs-vsctl add-port "br${IP3_MD5}" "vxlan${IP3_MD5}" -- set interface "vxlan${IP3_MD5}" type=vxlan options:remote_ip=${VTEP_IP} options:key=2002
         ip addr add ${IN_NET_IP3} dev "br${IP3_MD5}"
         ip link set "br${IP3_MD5}" up
 
