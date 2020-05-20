@@ -28,11 +28,15 @@ if [[ -f "$FILE" ]]; then
         IN_NET_IP1="$(ip a | awk '/ens4/{getline;getline; print}' | awk -F/ '{print $1}' - | awk '{print $2}' -)/24"
         IN_NET_IP2="$(ip a | awk '/ens5/{getline;getline; print}' | awk -F/ '{print $1}' - | awk '{print $2}' -)/24"
         IN_NET_IP3="$(ip a | awk '/ens6/{getline;getline; print}' | awk -F/ '{print $1}' - | awk '{print $2}' -)/24"
+        IN_NET_IP4="$(ip a | awk '/ens7/{getline;getline; print}' | awk -F/ '{print $1}' - | awk '{print $2}' -)/24"
+        IN_NET_IP5="$(ip a | awk '/ens8/{getline;getline; print}' | awk -F/ '{print $1}' - | awk '{print $2}' -)/24"
 
         # Hashing the IP's
         IP1_MD5=$(md5sum <<<"${IN_NET_IP1}" | cut -c 1-10)
         IP2_MD5=$(md5sum <<<"${IN_NET_IP2}" | cut -c 1-10)
         IP3_MD5=$(md5sum <<<"${IN_NET_IP3}" | cut -c 1-10)
+        IP4_MD5=$(md5sum <<<"${IN_NET_IP4}" | cut -c 1-10)
+        IP5_MD5=$(md5sum <<<"${IN_NET_IP5}" | cut -c 1-10)
 
         # OpenvSwitch configuration
         sudo ovs-vsctl add-br "br${IP1_MD5}"
@@ -55,6 +59,20 @@ if [[ -f "$FILE" ]]; then
         sudo ovs-vsctl add-port "br${IP3_MD5}" "vxlan${IP3_MD5}" -- set interface "vxlan${IP3_MD5}" type=vxlan options:remote_ip=${VTEP_IP} options:key=2002
         ip addr add ${IN_NET_IP3} dev "br${IP3_MD5}"
         ip link set "br${IP3_MD5}" up
+
+        sudo ovs-vsctl add-br "br${IP4_MD5}"
+        ip addr flush dev ens7
+        sudo ovs-vsctl add-port "br${IP4_MD5}" ens7
+        sudo ovs-vsctl add-port "br${IP4_MD5}" "vxlan${IP4_MD5}" -- set interface "vxlan${IP4_MD5}" type=vxlan options:remote_ip=${VTEP_IP} options:key=2003
+        ip addr add ${IN_NET_IP4} dev "br${IP4_MD5}"
+        ip link set "br${IP4_MD5}" up
+
+        sudo ovs-vsctl add-br "br${IP5_MD5}"
+        ip addr flush dev ens8
+        sudo ovs-vsctl add-port "br${IP5_MD5}" ens8
+        sudo ovs-vsctl add-port "br${IP5_MD5}" "vxlan${IP5_MD5}" -- set interface "vxlan${IP5_MD5}" type=vxlan options:remote_ip=${VTEP_IP} options:key=2004
+        ip addr add ${IN_NET_IP5} dev "br${IP5_MD5}"
+        ip link set "br${IP5_MD5}" up
 
     fi
 fi
