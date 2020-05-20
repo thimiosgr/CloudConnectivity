@@ -209,14 +209,10 @@ printf "Creating instances on each internal network...\n"
 COUNTER=0
 while [ "$COUNTER" -lt "${#OPENSTACK_ARR[@]}" ]; 
 do
-  for i in $(seq 1 10)
+  for i in $(seq 1 5)
   do
-    openstack server create --image $IMAGE_ID --flavor m1.heat_int --key-name KEYPAIR --network ${OPENSTACK_ARR[COUNTER]} test_instances
+    openstack server create --image cirros-0.4.0-x86_64-disk --flavor m1.nano --network ${OPENSTACK_ARR[COUNTER]} test_instance
   done
 COUNTER=$((COUNTER+1))
 done
-
-openstack server create --image $IMAGE_ID --flavor m1.heat_int --key-name KEYPAIR --network $INTERNAL_NETWORK1_ID peer1 > /dev/null 2>&1
-openstack server create --image $IMAGE_ID --flavor m1.heat_int --key-name KEYPAIR --network $INTERNAL_NETWORK2_ID peer2 > /dev/null 2>&1
-openstack server create --image $IMAGE_ID --flavor m1.heat_int --key-name KEYPAIR --network $INTERNAL_NETWORK3_ID peer3 > /dev/null 2>&1
 printf "Done"
