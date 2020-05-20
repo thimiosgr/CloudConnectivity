@@ -74,31 +74,35 @@ fi
 
 if [[ -z "$OPENSTACK_IP" ]]; then
   printf "\033[0;31mYou have not provided an Openstack IP. Use -oi or -opip to provide an IP.\033[0m\n"
-  exit 1
+  EXIT_INT=1
 fi
 
 if [[ -z "$VPN_IP" ]]; then
   printf "\033[0;31mYou have not provided a VPN IP. Use -vi or -vpnip to provide an IP.\033[0m\n"
-  exit 1
+  EXIT_INT=1
 fi
 
 if [[ -z "$IMAGE_NAME" ]]; then
   printf "\033[0;31mYou have not provided an image name. Use -i or -image to provide one.\033[0m\n"
-  exit 1
+  EXIT_INT=1
 fi
 
 if [[ -z "$PRIMARY_NETWORK" ]]; then
   printf "\033[0;31mYou have not provided a name for the external network. Use -ei or -xnet to provide one.\033[0m\n"
-  exit 1
+  EXIT_INT=1
 fi
 
 if [[ -z "$PASSWD" ]]; then
   printf "\033[0;31mYou have not provided a password for authentication. Use -p or -password to provide one.\033[0m\n"
-  exit 1
+  EXIT_INT=1
 fi
 
 if [[ -z "$FILENAME" ]]; then
   printf "\033[0;31mYou have not provided a name for the VPN files. Use -f or -filename to provide one.\033[0m\n"
+  EXIT_INT=1
+fi
+
+if [[ EXIT_INT==1 ]]; then
   exit 1
 fi
 
