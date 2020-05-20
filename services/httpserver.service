@@ -2,7 +2,7 @@
 After=network.target
 
 [Service]
-ExecStart=/usr/local/bin/webserver.sh
+ExecStart=/usr/local/bin/httpserver.sh
 
 [Install]
 WantedBy=default.target
