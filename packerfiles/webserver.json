@@ -1,0 +1,45 @@
+{
+    "builders": [
+      {
+        "type": "openstack",
+        "ssh_username": "ubuntu",
+        "identity_endpoint": "http://150.140.186.115/identity",
+        "image_name": "packerimage",
+        "source_image": "e9ad70c4-438e-483b-bff7-931b2181bad6",
+        "flavor": "ds512M",
+        "networks": [
+          "3e42296e-cdbf-4099-a4c4-3ea4df87535c"
+        ],
+        "use_floating_ip": true,
+        "floating_ip_pool": "public"
+      }
+    ],
+    "provisioners": [
+      {
+        "type": "file",
+        "source": "/home/comlab/CloudConnectivity/scripts/connectivity.service",
+        "destination": "/home/ubuntu/networkconfiguration.sh"
+      },
+      {
+        "type": "file",
+        "source": "/home/comlab/CloudConnectivity/scripts/connectivity.service",
+        "destination": "/home/ubuntu/networkconf.service"
+      },
+      {
+        "type": "shell",
+        "inline_shebang": "/bin/bash -e",
+        "inline": [
+          "sleep 5",
+          "sudo bash -c 'echo \"net.ipv4.ip_forward=1\" >> /etc/sysctl.conf' 2>&1",
+          "sudo mv tunnelcreator.sh /usr/local/bin > /dev/null 2>&1",
+          "sudo chmod 755 /usr/local/bin/tunnelcreator.sh > /dev/null 2>&1",
+          "sudo mv tunneling.service /etc/systemd/system > /dev/null 2>&1",
+          "sudo chmod 664 /etc/systemd/system/tunneling.service > /dev/null 2>&1",
+          "sudo systemctl daemon-reload > /dev/null 2>&1",
+          "sudo systemctl enable tunneling.service > /dev/null 2>&1",
+          "sudo apt update > /dev/null 2>&1",
+          "sudo apt install python -y > /dev/null 2>&1"
+        ]
+      }
+    ]
+  }
