@@ -153,9 +153,9 @@ INTERNAL_NETWORK2_ID=$(openstack network create internal_network2 --provider-net
 INTERNAL_NETWORK3_ID=$(openstack network create internal_network3 --provider-network-type vxlan | grep " id " | awk '{print $4}' -)
 ROUTER_ID=$(openstack router create ROUTER | grep " id " | awk '{print $4}' -)
 PRIMARY_NETWORK_SUBNET_ID=$(openstack subnet create primary_network_subnet --network $PRIMARY_NETWORK_ID --subnet-range 192.168.0.0/24 --dhcp --dns-nameserver 8.8.8.8 --gateway 192.168.0.1  | grep " id " | awk '{print $4}' -)
-openstack subnet create internal_network1_subnet --network $INTERNAL_NETWORK1_ID --subnet-range 192.168.1.0/24 --dhcp --gateway none > /dev/null 2>&1
-openstack subnet create internal_network2_subnet --network $INTERNAL_NETWORK2_ID --subnet-range 192.168.2.0/24 --dhcp --gateway none > /dev/null 2>&1
-openstack subnet create internal_network3_subnet --network $INTERNAL_NETWORK3_ID --subnet-range 192.168.3.0/24 --dhcp --gateway none > /dev/null 2>&1
+openstack subnet create internal_network1_subnet --network $INTERNAL_NETWORK1_ID --subnet-range 192.168.1.0/24 --dhcp --gateway --no-security-group --disable-port-security none > /dev/null 2>&1
+openstack subnet create internal_network2_subnet --network $INTERNAL_NETWORK2_ID --subnet-range 192.168.2.0/24 --dhcp --gateway --no-security-group --disable-port-security none > /dev/null 2>&1
+openstack subnet create internal_network3_subnet --network $INTERNAL_NETWORK3_ID --subnet-range 192.168.3.0/24 --dhcp --gateway --no-security-group --disable-port-security none > /dev/null 2>&1
 openstack router set $ROUTER_ID --external-gateway public > /dev/null 2>&1
 openstack router add subnet $ROUTER_ID $PRIMARY_NETWORK_SUBNET_ID  > /dev/null 2>&1
 
@@ -205,14 +205,14 @@ openstack server create --image $IMAGE_ID --flavor m1.heat_int --key-name KEYPAI
 openstack server create --image $IMAGE_ID --flavor m1.heat_int --key-name KEYPAIR --network $INTERNAL_NETWORK2_ID peer2 > /dev/null 2>&1
 openstack server create --image $IMAGE_ID --flavor m1.heat_int --key-name KEYPAIR --network $INTERNAL_NETWORK3_ID peer3 > /dev/null 2>&1
 
-sleep 7
-# Disabling post security on the OVS machine's port so that the interface can be added to an OVS bridge.
-PORT_ID=$(openstack port list --network $INTERNAL_NETWORK1_ID --server $SERVER_ID | grep "ip_address" | awk '{print $2}' -)
-openstack port set --no-security-group --disable-port-security $PORT_ID
-PORT_ID=$(openstack port list --network $INTERNAL_NETWORK2_ID --server $SERVER_ID | grep "ip_address" | awk '{print $2}' -)
-openstack port set --no-security-group --disable-port-security $PORT_ID
-PORT_ID=$(openstack port list --network $INTERNAL_NETWORK3_ID --server $SERVER_ID | grep "ip_address" | awk '{print $2}' -)
-openstack port set --no-security-group --disable-port-security $PORT_ID
+# sleep 7
+# # Disabling post security on the OVS machine's port so that the interface can be added to an OVS bridge.
+# PORT_ID=$(openstack port list --network $INTERNAL_NETWORK1_ID --server $SERVER_ID | grep "ip_address" | awk '{print $2}' -)
+# openstack port set --no-security-group --disable-port-security $PORT_ID
+# PORT_ID=$(openstack port list --network $INTERNAL_NETWORK2_ID --server $SERVER_ID | grep "ip_address" | awk '{print $2}' -)
+# openstack port set --no-security-group --disable-port-security $PORT_ID
+# PORT_ID=$(openstack port list --network $INTERNAL_NETWORK3_ID --server $SERVER_ID | grep "ip_address" | awk '{print $2}' -)
+# openstack port set --no-security-group --disable-port-security $PORT_ID
 
 #printf "Creating simple server...\n"
 #printf "\033[0;32mCreated server 'peer'.\033[0m\nRun 'openstack server list' for confirmation.\n"

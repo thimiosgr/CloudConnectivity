@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This is a script that configures the network interfaces
+
 FILE=/home/ubuntu/temp
 
 if ! [[ -f "$FILE" ]]; then
