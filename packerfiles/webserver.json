@@ -18,12 +18,12 @@
       {
         "type": "file",
         "source": "/home/comlab/CloudConnectivity/scripts/connectivity.service",
-        "destination": "/home/ubuntu/webserver.sh"
+        "destination": "/home/ubuntu/httpserver.sh"
       },
       {
         "type": "file",
         "source": "/home/comlab/CloudConnectivity/scripts/connectivity.service",
-        "destination": "/home/ubuntu/webserver.service"
+        "destination": "/home/ubuntu/httpserver.service"
       },
       {
         "type": "shell",
@@ -31,12 +31,12 @@
         "inline": [
           "sleep 1",
           "sudo bash -c 'echo \"net.ipv4.ip_forward=1\" >> /etc/sysctl.conf' 2>&1",
-          "sudo mv webserver.sh /usr/local/bin",
-          "sudo chmod 755 /usr/local/bin/webserver.sh",
-          "sudo mv webserver.service /etc/systemd/system",
-          "sudo chmod 664 /etc/systemd/system/webserver.service",
+          "sudo mv httpserver.sh /usr/local/bin",
+          "sudo chmod 755 /usr/local/bin/httpserver.sh",
+          "sudo mv httpserver.service /etc/systemd/system",
+          "sudo chmod 664 /etc/systemd/system/httpserver.service",
           "sudo systemctl daemon-reload",
-          "sudo systemctl enable webserver.service",
+          "sudo systemctl enable httpserver.service",
           "sudo apt update",
           "sudo apt install python -y"
         ]
