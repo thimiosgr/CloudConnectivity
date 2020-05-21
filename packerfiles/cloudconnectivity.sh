@@ -218,7 +218,7 @@ packer build ${THE_PATH}/packerfiles/httpserver.json
 printf "\033[0;32mCreated image: packerimage.\n\033[0mRun 'openstack image list' for confirmation.\n"
 
 printf "\nCreating server for Open vSwitch...\n"
-SERVER_ID=$(openstack server create --image packerimage --flavor ds512M --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network ${PRIMARY_NETWORK_ID} --network ${INTERNAL_NETWORK1_ID} --network ${INTERNAL_NETWORK2_ID} --network ${INTERNAL_NETWORK3_ID} --network ${INTERNAL_NETWORK4_ID} --network ${INTERNAL_NETWORK5_ID} OVSmachine | grep " id " | awk '{print $4}' -)
+SERVER_ID=$(openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network ${PRIMARY_NETWORK_ID} --network ${INTERNAL_NETWORK1_ID} --network ${INTERNAL_NETWORK2_ID} --network ${INTERNAL_NETWORK3_ID} --network ${INTERNAL_NETWORK4_ID} --network ${INTERNAL_NETWORK5_ID} OVSmachine | grep " id " | awk '{print $4}' -)
 printf "\033[0;32mCreated server 'OVSmachine'.\033[0m\nRun 'openstack server list' for confirmation.\n"
 
 printf "Creating instances on each internal network...\n"
@@ -230,7 +230,7 @@ do
     RANDOM_INTEGER=$(echo $((1 + RANDOM)))
     openstack server create --image cirros-0.4.0-x86_64-disk --flavor m1.nano --network ${OPENSTACK_ARR[COUNTER]} "cirros_instance_${RANDOM_INTEGER}" > /dev/null 2>&1
   done
-  openstack server create --image webserver --flavor ds512M --network ${OPENSTACK_ARR[COUNTER]} "webserver_${RANDOM_INTEGER}" > /dev/null 2>&1
+  openstack server create --image webserver --flavor m1.heat_int --network ${OPENSTACK_ARR[COUNTER]} "webserver_${RANDOM_INTEGER}" > /dev/null 2>&1
 COUNTER=$((COUNTER+1))
 done
 printf "Done"
