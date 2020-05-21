@@ -6,30 +6,6 @@ declare -a OPENSTACK_ARR
 
 while (( "$#" )); do
   case "$1" in
-    -oi | -opip)
-      OPENSTACK_IP=$2
-      shift 2
-      ;;
-    -vi | -vpnip)
-      VPN_IP=$2 
-      shift 2
-      ;;
-    -i | -image)
-      IMAGE_NAME=$2
-      shift 2
-      ;;
-    -n | -network)
-      PRIMARY_NETWORK=$2
-      shift 2
-      ;;
-    -p | -password)
-      PASSWD=$2
-      shift 2
-      ;;
-    -f | -filename)
-      FILENAME=$2
-      shift 2
-      ;;
     -def | -default)
       IP=$(ifconfig | grep "150.140.186" | awk '{print $2}' -)
       if [[ $IP == "150.140.186.115" ]]; then
@@ -60,45 +36,9 @@ if ! [[ -z ${COUNTER} ]]; then
   echo "This is a script that provides Layer 2 connectivity between instances of two different Openstack clouds."
   echo "You have to copy the file with the Openstack credentials in the CloudConnectivity/Cloudconnectivity folder and name it admin-openrc.sh."
   echo "The user options are:"
-  printf "\t\033[0;33m-oi\033[0m, \033[0;33m-opip\033[0m      :  The IP of the machine that runs the Openstack cloud.\n"
-  printf "\t\033[0;33m-vi\033[0m, \033[0;33m-vpnip\033[0m     :  The IP of the machine that runs the OpenVPN server.\n"
-  printf "\t\033[0;33m-i\033[0m, \033[0;33m-image\033[0m      :  The name of the image that will be used as source for the new image.\n"
-  printf "\t\033[0;33m-xn\033[0m, \033[0;33m-xnet\033[0m      :  The name of the external network on which the OVS machine will be connected to.\n"
-  printf "\t\033[0;33m-in\033[0m, \033[0;33m-inet\033[0m      :  The name of the internal network on which the OVS machine and the rest instances will be connected to.\n"
-  printf "\t\033[0;33m-p\033[0m, \033[0;33m-password\033[0m   :  The password of the Openstack cloud.\n"
-  printf "\t\033[0;33m-f\033[0m, \033[0;33m-filename\033[0m   :  The name of the VPN files that every instance must fetch.\n"
   printf "\t\033[0;33m-def\033[0m, \033[0;33m-default\033[0m  :  Run script with the default values.\n"
   printf "\t\033[0;33m-h\033[0m, \033[0;33m-help\033[0m       :  Shows all the available script options.\n"
-  exit 1
-fi
-
-if [[ -z "$OPENSTACK_IP" ]]; then
-  printf "\033[0;31mYou have not provided an Openstack IP. Use -oi or -opip to provide an IP.\033[0m\n"
-  exit 1
-fi
-
-if [[ -z "$VPN_IP" ]]; then
-  printf "\033[0;31mYou have not provided a VPN IP. Use -vi or -vpnip to provide an IP.\033[0m\n"
-  exit 1
-fi
-
-if [[ -z "$IMAGE_NAME" ]]; then
-  printf "\033[0;31mYou have not provided an image name. Use -i or -image to provide one.\033[0m\n"
-  exit 1
-fi
-
-if [[ -z "$PRIMARY_NETWORK" ]]; then
-  printf "\033[0;31mYou have not provided a name for the external network. Use -ei or -xnet to provide one.\033[0m\n"
-  exit 1
-fi
-
-if [[ -z "$PASSWD" ]]; then
-  printf "\033[0;31mYou have not provided a password for authentication. Use -p or -password to provide one.\033[0m\n"
-  exit 1
-fi
-
-if [[ -z "$FILENAME" ]]; then
-  printf "\033[0;31mYou have not provided a name for the VPN files. Use -f or -filename to provide one.\033[0m\n"
+  printf "If you want to change the default values, edit the openstack.sh file located in CloudConnectivity/credentials/vars directory.\n"
   exit 1
 fi
 
@@ -135,19 +75,6 @@ else
     echo  "Package moreutils is already instaled. Not installing."
 fi
 
-# Regular expression to check if the IP's given by user are correct.
-IP_RE="^(([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5]){1}$"
-
-if ! [[ ${OPENSTACK_IP} =~ ${IP_RE} ]]; then
-  printf "\033[0;31mThe Openstack IP is not correct.\033[0m\n"
-  exit 1
-fi
-
-if ! [[ ${VPN_IP} =~ ${IP_RE} ]]; then
-  printf "\033[0;31mThe VPN server's IP is not correct.\033[0m\n"
-  exit 1
-fi
-
 # Openstack networks configuration
 echo "Creating full network topology..."
 PRIMARY_NETWORK_ID=$(openstack network create primary_network --provider-network-type vxlan | grep " id " | awk '{print $4}' -)
@@ -169,23 +96,12 @@ openstack subnet create internal_network2_subnet --network $INTERNAL_NETWORK2_ID
 openstack subnet create internal_network3_subnet --network $INTERNAL_NETWORK3_ID --subnet-range 192.168.3.0/24 --dhcp --gateway none > /dev/null 2>&1
 openstack subnet create internal_network4_subnet --network $INTERNAL_NETWORK4_ID --subnet-range 192.168.4.0/24 --dhcp --gateway none > /dev/null 2>&1
 openstack subnet create internal_network5_subnet --network $INTERNAL_NETWORK5_ID --subnet-range 192.168.5.0/24 --dhcp --gateway none > /dev/null 2>&1
-openstack router set $ROUTER_ID --external-gateway public > /dev/null 2>&1
+openstack router set $ROUTER_ID --external-gateway $PUBLIC_NETWORK > /dev/null 2>&1
 openstack router add subnet $ROUTER_ID $PRIMARY_NETWORK_SUBNET_ID  > /dev/null 2>&1
 printf "\033[0;32mDone\033[0m\n"
 
 # Converting image and network names to ID's, so they can be passed to the JSON file that will be used by Packer.
 IMAGE_ID=$(openstack image list | grep ${IMAGE_NAME} | awk '{print $2}' -)
-
-# Checking if the image and network given by the user are correct.
-if [[ -z "${IMAGE_ID}" ]]; then
-  printf "\033[0;31mThe image name you provided is not correct.\033[0m\n"
-  exit 1
-fi
-
-if [[ -z "${PRIMARY_NETWORK_ID}" ]]; then
-  printf "\033[0;31mThe external network name you provided is not correct.\033[0m\n"
-  exit 1
-fi
 
 # Modifying the Packer JSON file according to the user's preferences.
 printf "Editing JSON files..."
