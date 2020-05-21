@@ -4,7 +4,7 @@
         "type": "openstack",
         "ssh_username": "ubuntu",
         "identity_endpoint": "http://150.140.186.115/identity",
-        "image_name": "simplehttpserver",
+        "image_name": "SimpleHTTPserver",
         "source_image": "e9ad70c4-438e-483b-bff7-931b2181bad6",
         "flavor": "m1.heat_int",
         "networks": [

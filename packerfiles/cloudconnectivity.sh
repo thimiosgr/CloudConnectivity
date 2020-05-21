@@ -135,7 +135,7 @@ sed -i '6s/.*/USERNAME='"${FILENAME}"'/' ${THE_PATH}/services/ovs-machine/tunnel
 echo "Building images... This might take some time, depending on your hardware and your Internet connection."
 packer build ${THE_PATH}/templates/ovsimage.json > /dev/null 2>&1
 packer build ${THE_PATH}/templates/httpserverimage.json > /dev/null 2>&1
-printf "\033[0;32mCreated images: OVSimage,simplehttpserver.\n\033[0mRun 'openstack image list' for confirmation.\n"
+printf "\033[0;32mCreated images: OVSimage,SimpleHTTPserver.\n\033[0mRun 'openstack image list' for confirmation.\n"
 
 printf "\nCreating server for Open vSwitch..."
 SERVER_ID=$(openstack server create --image OVSimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network ${PRIMARY_NETWORK_ID} --network ${INTERNAL_NETWORK1_ID} --network ${INTERNAL_NETWORK2_ID} --network ${INTERNAL_NETWORK3_ID} --network ${INTERNAL_NETWORK4_ID} --network ${INTERNAL_NETWORK5_ID} OVSmachine | grep " id " | awk '{print $4}' -)
@@ -150,7 +150,7 @@ do
     RANDOM_INTEGER=$(echo $((1 + RANDOM)))
     openstack server create --image cirros-0.4.0-x86_64-disk --flavor m1.nano --network ${OPENSTACK_ARR[COUNTER]} "cirros_instance_${RANDOM_INTEGER}" > /dev/null 2>&1
   done
-  openstack server create --image simplehttpserver --flavor m1.heat_int --network ${OPENSTACK_ARR[COUNTER]} "httpserver_${RANDOM_INTEGER}" > /dev/null 2>&1
+  openstack server create --image SimpleHTTPserver --flavor m1.heat_int --network ${OPENSTACK_ARR[COUNTER]} "httpserver_${RANDOM_INTEGER}" > /dev/null 2>&1
 COUNTER=$((COUNTER+1))
 done
 printf "\033[0;32m Done\033[0m\n"
