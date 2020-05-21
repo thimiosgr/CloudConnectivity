@@ -1,6 +1,6 @@
 #!/bin/bash
 
-THE_PATH="$(pwd)/CloudConnectivity"
+THE_PATH="$(pwd)"
 PARAMS=""
 declare -a OPENSTACK_ARR
 
