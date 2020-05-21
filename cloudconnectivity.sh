@@ -138,7 +138,7 @@ if ! [[ ${VPN_IP} =~ ${IP_RE} ]]; then
 fi
 
 # Openstack networks configuration
-echo "Creating full network topology..."
+printf "Creating full network topology..."
 PRIMARY_NETWORK_ID=$(openstack network create primary_network --provider-network-type vxlan | grep " id " | awk '{print $4}' -)
 INTERNAL_NETWORK1_ID=$(openstack network create internal_network1 --provider-network-type vxlan --disable-port-security | grep " id " | awk '{print $4}' -)
 OPENSTACK_ARR[0]=$INTERNAL_NETWORK1_ID
@@ -160,7 +160,7 @@ openstack subnet create internal_network4_subnet --network $INTERNAL_NETWORK4_ID
 openstack subnet create internal_network5_subnet --network $INTERNAL_NETWORK5_ID --subnet-range 192.168.5.0/24 --dhcp --gateway none > /dev/null 2>&1
 openstack router set $ROUTER_ID --external-gateway $PUBLIC_NETWORK > /dev/null 2>&1
 openstack router add subnet $ROUTER_ID $PRIMARY_NETWORK_SUBNET_ID  > /dev/null 2>&1
-printf "\033[0;32mDone\033[0m\n"
+printf "\033[0;32m Done\033[0m\n"
 
 # Converting image and network names to ID's, so they can be passed to the JSON file that will be used by Packer.
 IMAGE_ID=$(openstack image list | grep ${IMAGE_NAME} | awk '{print $2}' -)
