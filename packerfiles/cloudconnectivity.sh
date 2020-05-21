@@ -190,35 +190,35 @@ fi
 # Modifying the Packer JSON file according to the user's preferences.
 printf "Editing JSON files..."
 IDENTITY="http://${OPENSTACK_IP}/identity"
-TUNNEL_SCRIPT="${THE_PATH}/services/tunnelcreator.sh"
-TUNNEL_SERVICE="${THE_PATH}/services/tunneling.service"
-NETWORKING_SCRIPT="${THE_PATH}/services/networkconfiguration.sh"
-NETWORKING_SERVICE="${THE_PATH}/services/networkconf.service"
-WEBSERVER_SCRIPT="${THE_PATH}/services/httpserver.sh"
-WEBSERVER_SERVICE="${THE_PATH}/services/httpserver.service"
+TUNNEL_SCRIPT="${THE_PATH}/services/ovs-machine/tunnelcreator.sh"
+TUNNEL_SERVICE="${THE_PATH}/services/ovs-machine/tunneling.service"
+NETWORKING_SCRIPT="${THE_PATH}/services/ovs-machine/networkconfiguration.sh"
+NETWORKING_SERVICE="${THE_PATH}/services/ovs-machine/networkconf.service"
+WEBSERVER_SCRIPT="${THE_PATH}/services/httpserver/httpserver.sh"
+WEBSERVER_SERVICE="${THE_PATH}/services/httpserver/httpserver.service"
 
-jq --arg v "${IDENTITY}" '.builders[].identity_endpoint = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
-jq --arg v "${IMAGE_ID}" '.builders[].source_image = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
-jq --arg v "${PRIMARY_NETWORK_ID}" '.builders[].networks[] = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
-jq --arg v "${TUNNEL_SCRIPT}" '.provisioners[0].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
-jq --arg v "${TUNNEL_SERVICE}" '.provisioners[1].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
-jq --arg v "${NETWORKING_SCRIPT}" '.provisioners[2].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
-jq --arg v "${NETWORKING_SERVICE}" '.provisioners[3].source = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
+jq --arg v "${IDENTITY}" '.builders[].identity_endpoint = $v' ${THE_PATH}/templates/imagebuild.json | sponge ${THE_PATH}/templates/imagebuild.json
+jq --arg v "${IMAGE_ID}" '.builders[].source_image = $v' ${THE_PATH}/templates/imagebuild.json | sponge ${THE_PATH}/templates/imagebuild.json
+jq --arg v "${PRIMARY_NETWORK_ID}" '.builders[].networks[] = $v' ${THE_PATH}/templates/imagebuild.json | sponge ${THE_PATH}/templates/imagebuild.json
+jq --arg v "${TUNNEL_SCRIPT}" '.provisioners[0].source = $v' ${THE_PATH}/templates/imagebuild.json | sponge ${THE_PATH}/templates/imagebuild.json
+jq --arg v "${TUNNEL_SERVICE}" '.provisioners[1].source = $v' ${THE_PATH}/templates/imagebuild.json | sponge ${THE_PATH}/templates/imagebuild.json
+jq --arg v "${NETWORKING_SCRIPT}" '.provisioners[2].source = $v' ${THE_PATH}/templates/imagebuild.json | sponge ${THE_PATH}/templates/imagebuild.json
+jq --arg v "${NETWORKING_SERVICE}" '.provisioners[3].source = $v' ${THE_PATH}/templates/imagebuild.json | sponge ${THE_PATH}/templates/imagebuild.json
 
-jq --arg v "${IDENTITY}" '.builders[].identity_endpoint = $v' ${THE_PATH}/packerfiles/httpserver.json | sponge ${THE_PATH}/packerfiles/httpserver.json
-jq --arg v "${IMAGE_ID}" '.builders[].source_image = $v' ${THE_PATH}/packerfiles/httpserver.json | sponge ${THE_PATH}/packerfiles/httpserver.json
-jq --arg v "${PRIMARY_NETWORK_ID}" '.builders[].networks[] = $v' ${THE_PATH}/packerfiles/httpserver.json | sponge ${THE_PATH}/packerfiles/httpserver.json
-jq --arg v "${WEBSERVER_SCRIPT}" '.provisioners[0].source = $v' ${THE_PATH}/packerfiles/httpserver.json | sponge ${THE_PATH}/packerfiles/httpserver.json
-jq --arg v "${WEBSERVER_SERVICE}" '.provisioners[1].source = $v' ${THE_PATH}/packerfiles/httpserver.json | sponge ${THE_PATH}/packerfiles/httpserver.json
+jq --arg v "${IDENTITY}" '.builders[].identity_endpoint = $v' ${THE_PATH}/templates/httpserver.json | sponge ${THE_PATH}/templates/httpserver.json
+jq --arg v "${IMAGE_ID}" '.builders[].source_image = $v' ${THE_PATH}/templates/httpserver.json | sponge ${THE_PATH}/templates/httpserver.json
+jq --arg v "${PRIMARY_NETWORK_ID}" '.builders[].networks[] = $v' ${THE_PATH}/templates/httpserver.json | sponge ${THE_PATH}/templates/httpserver.json
+jq --arg v "${WEBSERVER_SCRIPT}" '.provisioners[0].source = $v' ${THE_PATH}/templates/httpserver.json | sponge ${THE_PATH}/templates/httpserver.json
+jq --arg v "${WEBSERVER_SERVICE}" '.provisioners[1].source = $v' ${THE_PATH}/templates/httpserver.json | sponge ${THE_PATH}/templates/httpserver.json
 printf "\033[0;32m Done\033[0m\n"
 
 # Edit the boot script of the new image, providing it with the IP of the VPN server and the username that it will use to fetch the VPN files.
-sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' ${THE_PATH}/services/tunnelcreator.sh
-sed -i '6s/.*/USERNAME='"${FILENAME}"'/' ${THE_PATH}/services/tunnelcreator.sh
+sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' ${THE_PATH}/services/ovs-machine/tunnelcreator.sh
+sed -i '6s/.*/USERNAME='"${FILENAME}"'/' ${THE_PATH}/services/ovs-machine/tunnelcreator.sh
 
 echo "Building images... This might take some time, depending on your hardware and your Internet connection."
-packer build ${THE_PATH}/packerfiles/imagebuild.json > /dev/null 2>&1
-packer build ${THE_PATH}/packerfiles/httpserver.json > /dev/null 2>&1
+packer build ${THE_PATH}/templates/imagebuild.json > /dev/null 2>&1
+packer build ${THE_PATH}/templates/httpserver.json > /dev/null 2>&1
 printf "\033[0;32mCreated images: packerimage,webserver.\n\033[0mRun 'openstack image list' for confirmation.\n"
 
 printf "\nCreating server for Open vSwitch..."
