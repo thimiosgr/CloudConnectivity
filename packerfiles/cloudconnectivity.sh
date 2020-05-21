@@ -171,7 +171,7 @@ openstack subnet create internal_network4_subnet --network $INTERNAL_NETWORK4_ID
 openstack subnet create internal_network5_subnet --network $INTERNAL_NETWORK5_ID --subnet-range 192.168.5.0/24 --dhcp --gateway none > /dev/null 2>&1
 openstack router set $ROUTER_ID --external-gateway public > /dev/null 2>&1
 openstack router add subnet $ROUTER_ID $PRIMARY_NETWORK_SUBNET_ID  > /dev/null 2>&1
-printf "\033[0;32m Done[0m\n"
+printf "\033[0;32m Done\033[0m\n"
 
 # Converting image and network names to ID's, so they can be passed to the JSON file that will be used by Packer.
 IMAGE_ID=$(openstack image list | grep ${IMAGE_NAME} | awk '{print $2}' -)
@@ -210,20 +210,20 @@ jq --arg v "${IMAGE_ID}" '.builders[].source_image = $v' ${THE_PATH}/packerfiles
 jq --arg v "${PRIMARY_NETWORK_ID}" '.builders[].networks[] = $v' ${THE_PATH}/packerfiles/httpserver.json | sponge ${THE_PATH}/packerfiles/httpserver.json
 jq --arg v "${WEBSERVER_SCRIPT}" '.provisioners[0].source = $v' ${THE_PATH}/packerfiles/httpserver.json | sponge ${THE_PATH}/packerfiles/httpserver.json
 jq --arg v "${WEBSERVER_SERVICE}" '.provisioners[1].source = $v' ${THE_PATH}/packerfiles/httpserver.json | sponge ${THE_PATH}/packerfiles/httpserver.json
-printf "\033[0;32m Done[0m\n"
+printf "\033[0;32m Done\033[0m\n"
 
 # Edit the boot script of the new image, providing it with the IP of the VPN server and the username that it will use to fetch the VPN files.
 sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' ${THE_PATH}/services/tunnelcreator.sh
 sed -i '6s/.*/USERNAME='"${FILENAME}"'/' ${THE_PATH}/services/tunnelcreator.sh
 
 echo "Building images... This might take some time, depending on your hardware and your Internet connection."
-packer build ${THE_PATH}/packerfiles/imagebuild.json
-packer build ${THE_PATH}/packerfiles/httpserver.json
+packer build ${THE_PATH}/packerfiles/imagebuild.json > /dev/null 2>&1
+packer build ${THE_PATH}/packerfiles/httpserver.json > /dev/null 2>&1
 printf "\033[0;32mCreated images: packerimage,webserver.\n\033[0mRun 'openstack image list' for confirmation.\n"
 
 printf "\nCreating server for Open vSwitch..."
 SERVER_ID=$(openstack server create --image packerimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network ${PRIMARY_NETWORK_ID} --network ${INTERNAL_NETWORK1_ID} --network ${INTERNAL_NETWORK2_ID} --network ${INTERNAL_NETWORK3_ID} --network ${INTERNAL_NETWORK4_ID} --network ${INTERNAL_NETWORK5_ID} OVSmachine | grep " id " | awk '{print $4}' -)
-printf "\033[0;32m Done[0m\n"
+printf "\033[0;32m Done\033[0m\n"
 
 printf "Creating instances on each internal network..."
 COUNTER=0
@@ -237,4 +237,4 @@ do
   openstack server create --image webserver --flavor m1.heat_int --network ${OPENSTACK_ARR[COUNTER]} "webserver_${RANDOM_INTEGER}" > /dev/null 2>&1
 COUNTER=$((COUNTER+1))
 done
-printf "\033[0;32m Done[0m\n"
+printf "\033[0;32m Done\033[0m\n"
