@@ -192,7 +192,7 @@ TUNNEL_SERVICE="${THE_PATH}/services/tunneling.service"
 NETWORKING_SCRIPT="${THE_PATH}/services/networkconfiguration.sh"
 NETWORKING_SERVICE="${THE_PATH}/services/networkconf.service"
 WEBSERVER_SCRIPT="${THE_PATH}/services/httpserver.sh"
-WEBSERVER_SERVICE="${THE_PATH}/services/httpserver.sh"
+WEBSERVER_SERVICE="${THE_PATH}/services/httpserver.service"
 
 jq --arg v "${IDENTITY}" '.builders[].identity_endpoint = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
 jq --arg v "${IMAGE_ID}" '.builders[].source_image = $v' ${THE_PATH}/packerfiles/imagebuild.json | sponge ${THE_PATH}/packerfiles/imagebuild.json
