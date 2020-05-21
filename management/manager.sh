@@ -52,7 +52,7 @@ do
   ssh comlab@${OPENSTACK_ARR[COUNTER]} << EOF
     rm -rf CloudConnectivity
     git clone https://github.com/thimiosgr/CloudConnectivity.git
-    ./CloudConnectivity/packerfiles/cloudconnectivity.sh -def
+    ./CloudConnectivity/exec/cloudconnectivity.sh -def
 EOF
 COUNTER=$((COUNTER+1))
 done

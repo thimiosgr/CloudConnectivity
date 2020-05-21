@@ -138,7 +138,7 @@ packer build ${THE_PATH}/templates/httpserverimage.json > /dev/null 2>&1
 printf "\033[0;32mCreated images: OVSimage,SimpleHTTPserver.\n\033[0mRun 'openstack image list' for confirmation.\n"
 
 printf "\nCreating server for Open vSwitch..."
-SERVER_ID=$(openstack server create --image OVSimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/packerfiles/user-data.txt --network ${PRIMARY_NETWORK_ID} --network ${INTERNAL_NETWORK1_ID} --network ${INTERNAL_NETWORK2_ID} --network ${INTERNAL_NETWORK3_ID} --network ${INTERNAL_NETWORK4_ID} --network ${INTERNAL_NETWORK5_ID} OVSmachine | grep " id " | awk '{print $4}' -)
+SERVER_ID=$(openstack server create --image OVSimage --flavor m1.heat_int --key-name KEYPAIR --user-data ${THE_PATH}/cloud-configuration/user-data.txt --network ${PRIMARY_NETWORK_ID} --network ${INTERNAL_NETWORK1_ID} --network ${INTERNAL_NETWORK2_ID} --network ${INTERNAL_NETWORK3_ID} --network ${INTERNAL_NETWORK4_ID} --network ${INTERNAL_NETWORK5_ID} OVSmachine | grep " id " | awk '{print $4}' -)
 printf "\033[0;32m Done\033[0m\n"
 
 printf "Creating instances on each internal network..."
