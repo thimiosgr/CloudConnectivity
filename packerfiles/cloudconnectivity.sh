@@ -19,7 +19,7 @@ while (( "$#" )); do
       shift 2
       ;;
     -n | -network)
-      PRIMARY_NETWORK=$2
+      PUBLIC_NETWORK=$2
       shift 2
       ;;
     -p | -password)
@@ -29,17 +29,6 @@ while (( "$#" )); do
     -f | -filename)
       FILENAME=$2
       shift 2
-      ;;
-    -def | -default)
-      IP=$(ifconfig | grep "150.140.186" | awk '{print $2}' -)
-      if [[ $IP == "150.140.186.115" ]]; then
-        source ${THE_PATH}/credentials/vars/openstack1.sh
-        source ${THE_PATH}/credentials/openstack/admin-openrc1.sh ${PASSWD}
-      else
-        source ${THE_PATH}/credentials/vars/openstack2.sh
-        source ${THE_PATH}/credentials/openstack/admin-openrc2.sh ${PASSWD}
-      fi
-      break
       ;;
     -h | -help)
       COUNTER=1
@@ -63,11 +52,9 @@ if ! [[ -z ${COUNTER} ]]; then
   printf "\t\033[0;33m-oi\033[0m, \033[0;33m-opip\033[0m      :  The IP of the machine that runs the Openstack cloud.\n"
   printf "\t\033[0;33m-vi\033[0m, \033[0;33m-vpnip\033[0m     :  The IP of the machine that runs the OpenVPN server.\n"
   printf "\t\033[0;33m-i\033[0m, \033[0;33m-image\033[0m      :  The name of the image that will be used as source for the new image.\n"
-  printf "\t\033[0;33m-xn\033[0m, \033[0;33m-xnet\033[0m      :  The name of the external network on which the OVS machine will be connected to.\n"
-  printf "\t\033[0;33m-in\033[0m, \033[0;33m-inet\033[0m      :  The name of the internal network on which the OVS machine and the rest instances will be connected to.\n"
+  printf "\t\033[0;33m-xn\033[0m, \033[0;33m-xnet\033[0m      :  The name of the provider network on which the primary network will be connected to.\n"
   printf "\t\033[0;33m-p\033[0m, \033[0;33m-password\033[0m   :  The password of the Openstack cloud.\n"
   printf "\t\033[0;33m-f\033[0m, \033[0;33m-filename\033[0m   :  The name of the VPN files that every instance must fetch.\n"
-  printf "\t\033[0;33m-def\033[0m, \033[0;33m-default\033[0m  :  Run script with the default values.\n"
   printf "\t\033[0;33m-h\033[0m, \033[0;33m-help\033[0m       :  Shows all the available script options.\n"
   exit 1
 fi
@@ -87,8 +74,8 @@ if [[ -z "$IMAGE_NAME" ]]; then
   exit 1
 fi
 
-if [[ -z "$PRIMARY_NETWORK" ]]; then
-  printf "\033[0;31mYou have not provided a name for the external network. Use -ei or -xnet to provide one.\033[0m\n"
+if [[ -z "$PUBLIC_NETWORK" ]]; then
+  printf "\033[0;31mYou have not provided a name for the provider network. Use -n or -network to provide one.\033[0m\n"
   exit 1
 fi
 
@@ -169,7 +156,7 @@ openstack subnet create internal_network2_subnet --network $INTERNAL_NETWORK2_ID
 openstack subnet create internal_network3_subnet --network $INTERNAL_NETWORK3_ID --subnet-range 192.168.3.0/24 --dhcp --gateway none > /dev/null 2>&1
 openstack subnet create internal_network4_subnet --network $INTERNAL_NETWORK4_ID --subnet-range 192.168.4.0/24 --dhcp --gateway none > /dev/null 2>&1
 openstack subnet create internal_network5_subnet --network $INTERNAL_NETWORK5_ID --subnet-range 192.168.5.0/24 --dhcp --gateway none > /dev/null 2>&1
-openstack router set $ROUTER_ID --external-gateway public > /dev/null 2>&1
+openstack router set $ROUTER_ID --external-gateway $PUBLIC_NETWORK > /dev/null 2>&1
 openstack router add subnet $ROUTER_ID $PRIMARY_NETWORK_SUBNET_ID  > /dev/null 2>&1
 printf "\033[0;32mDone\033[0m\n"
 
@@ -179,11 +166,6 @@ IMAGE_ID=$(openstack image list | grep ${IMAGE_NAME} | awk '{print $2}' -)
 # Checking if the image and network given by the user are correct.
 if [[ -z "${IMAGE_ID}" ]]; then
   printf "\033[0;31mThe image name you provided is not correct.\033[0m\n"
-  exit 1
-fi
-
-if [[ -z "${PRIMARY_NETWORK_ID}" ]]; then
-  printf "\033[0;31mThe external network name you provided is not correct.\033[0m\n"
   exit 1
 fi
 
