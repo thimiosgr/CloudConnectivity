@@ -45,6 +45,8 @@ while (( "$#" )); do
   esac
 done
 
+source ${THE_PATH}/credentials/openstack/admin-openrc1.sh
+
 if ! [[ -z ${COUNTER} ]]; then
   echo "This is a script that provides Layer 2 connectivity between instances of two different Openstack clouds."
   echo "You have to copy the file with the Openstack credentials in the CloudConnectivity/Cloudconnectivity folder and name it admin-openrc.sh."
