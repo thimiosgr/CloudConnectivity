@@ -45,7 +45,7 @@ while (( "$#" )); do
   esac
 done
 
-source ${THE_PATH}/credentials/openstack/admin-openrc1.sh
+source ${THE_PATH}/credentials/openstack/admin-openrc1.sh $PASSWD
 
 if ! [[ -z ${COUNTER} ]]; then
   echo "This is a script that provides Layer 2 connectivity between instances of two different Openstack clouds."
