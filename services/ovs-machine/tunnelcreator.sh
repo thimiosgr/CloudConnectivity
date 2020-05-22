@@ -73,7 +73,9 @@ if [[ -f "$FILE" ]]; then
         sudo ovs-vsctl add-port "br${IP5_MD5}" "vxlan${IP5_MD5}" -- set interface "vxlan${IP5_MD5}" type=vxlan options:remote_ip=${VTEP_IP} options:key=2004
         ip addr add ${IN_NET_IP5} dev "br${IP5_MD5}"
         ip link set "br${IP5_MD5}" up
-
+        
+        sudo openvpn /home/ubuntu/${USERNAME}/client1.ovpn
+        
     fi
 fi
 
