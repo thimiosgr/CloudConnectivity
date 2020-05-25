@@ -45,7 +45,14 @@ while (( "$#" )); do
   esac
 done
 
-source "$(pwd)/credentials/openstack/admin-openrc1.sh" $PASSWD
+IP=$(ifconfig | grep "150.140.186" | awk '{print $2}' -)
+if [[ $IP == "150.140.186.115" ]]; then
+  source ${THE_PATH}/credentials/vars/openstack1.sh
+  source ${THE_PATH}/credentials/openstack/admin-openrc1.sh ${PASSWD}
+else
+  source ${THE_PATH}/credentials/vars/openstack2.sh
+  source ${THE_PATH}/credentials/openstack/admin-openrc2.sh ${PASSWD}
+fi
 
 if ! [[ -z ${COUNTER} ]]; then
   echo "This is a script that provides Layer 2 connectivity between instances of two different Openstack clouds."
