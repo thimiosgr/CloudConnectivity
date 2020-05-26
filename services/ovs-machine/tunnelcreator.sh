@@ -74,7 +74,7 @@ if [[ -f "$FILE" ]]; then
         ip addr add ${IN_NET_IP5} dev "br${IP5_MD5}"
         ip link set "br${IP5_MD5}" up
         
-        sudo openvpn /home/ubuntu/${USERNAME}/client1.ovpn
+        sudo openvpn /home/ubuntu/${USERNAME}/${USERNAME}.ovpn
         
     fi
 fi
