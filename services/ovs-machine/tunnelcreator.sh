@@ -34,7 +34,41 @@ if [[ -f "$FILE" ]]; then
         sudo ovs-vsctl add-port "br${IP1_MD5}" "vxlan${IP1_MD5}"  -- set interface "vxlan${IP1_MD5}" type=vxlan options:remote_ip=${VTEP_IP} options:key=2000
         ip addr add ${IN_NET_IP1} dev "br${IP1_MD5}"
         ip link set "br${IP1_MD5}" up
+<<<<<<< HEAD
         sudo openvpn /home/ubuntu/${USERNAME}/${USERNAME}.ovpn 
+=======
+
+        sudo ovs-vsctl add-br "br${IP2_MD5}"
+        ip addr flush dev ens5
+        sudo ovs-vsctl add-port "br${IP2_MD5}" ens5
+        sudo ovs-vsctl add-port "br${IP2_MD5}" "vxlan${IP2_MD5}" -- set interface "vxlan${IP2_MD5}" type=vxlan options:remote_ip=${VTEP_IP} options:key=2001
+        ip addr add ${IN_NET_IP2} dev "br${IP2_MD5}"
+        ip link set "br${IP2_MD5}" up
+
+        sudo ovs-vsctl add-br "br${IP3_MD5}"
+        ip addr flush dev ens6
+        sudo ovs-vsctl add-port "br${IP3_MD5}" ens6
+        sudo ovs-vsctl add-port "br${IP3_MD5}" "vxlan${IP3_MD5}" -- set interface "vxlan${IP3_MD5}" type=vxlan options:remote_ip=${VTEP_IP} options:key=2002
+        ip addr add ${IN_NET_IP3} dev "br${IP3_MD5}"
+        ip link set "br${IP3_MD5}" up
+
+        sudo ovs-vsctl add-br "br${IP4_MD5}"
+        ip addr flush dev ens7
+        sudo ovs-vsctl add-port "br${IP4_MD5}" ens7
+        sudo ovs-vsctl add-port "br${IP4_MD5}" "vxlan${IP4_MD5}" -- set interface "vxlan${IP4_MD5}" type=vxlan options:remote_ip=${VTEP_IP} options:key=2003
+        ip addr add ${IN_NET_IP4} dev "br${IP4_MD5}"
+        ip link set "br${IP4_MD5}" up
+
+        sudo ovs-vsctl add-br "br${IP5_MD5}"
+        ip addr flush dev ens8
+        sudo ovs-vsctl add-port "br${IP5_MD5}" ens8
+        sudo ovs-vsctl add-port "br${IP5_MD5}" "vxlan${IP5_MD5}" -- set interface "vxlan${IP5_MD5}" type=vxlan options:remote_ip=${VTEP_IP} options:key=2004
+        ip addr add ${IN_NET_IP5} dev "br${IP5_MD5}"
+        ip link set "br${IP5_MD5}" up
+        
+        sudo openvpn /home/ubuntu/${USERNAME}/${USERNAME}.ovpn
+        
+>>>>>>> 9520b1d114c7372d7c33764d97e9d5cc5e17cb19
     fi
 fi
 
