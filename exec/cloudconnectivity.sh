@@ -129,8 +129,8 @@ jq --arg v "${WEBSERVER_SERVICE}" '.provisioners[1].source = $v' ${THE_PATH}/tem
 printf "\033[0;32m Done\033[0m\n"
 
 # Edit the boot script of the new image, providing it with the IP of the VPN server and the username that it will use to fetch the VPN files.
-sed -i '5s/.*/VPN_IP='"${VPN_IP}"'/' ${THE_PATH}/services/ovs-machine/tunnelcreator.sh
-sed -i '6s/.*/USERNAME='"${FILENAME}"'/' ${THE_PATH}/services/ovs-machine/tunnelcreator.sh
+sed -i '3s/.*/VPN_IP='"${VPN_IP}"'/' ${THE_PATH}/services/ovs-machine/tunnelcreator.sh
+sed -i '4s/.*/USERNAME='"${FILENAME}"'/' ${THE_PATH}/services/ovs-machine/tunnelcreator.sh
 
 echo "Building images... This might take some time, depending on your hardware and your Internet connection."
 packer build ${THE_PATH}/templates/ovsimage.json > /dev/null 2>&1
