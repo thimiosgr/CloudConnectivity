@@ -6,4 +6,4 @@ The purpose of the thesis is to provide L2 connectivity between two or more clou
 
 ![Imgur](https://imgur.com/iPavtfq.png)
 
-![Imgur](https://imgur.com/xl3i9CF)
+![Imgur](https://imgur.com/xl3i9CF.png)
