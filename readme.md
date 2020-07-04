@@ -5,3 +5,5 @@ This is a thesis of an undergraduate student studying at the department of Elect
 The purpose of the thesis is to provide L2 connectivity between two or more cloud using pure software virtual switches. Switches are based on OpenVSwitch, a proven solution for implementing software-based data planes. Goal is to package OVS in a way that can implement the gateway role for multiple data paths that may serve different purposes in each cloud.
 
 ![Imgur](https://imgur.com/iPavtfq.png)
+
+![Imgur](https://imgur.com/TN4ub5K.png)
