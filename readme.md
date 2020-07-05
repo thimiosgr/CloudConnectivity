@@ -8,7 +8,7 @@ The purpose of the thesis is to provide L2 connectivity between two or more clou
 ![Imgur](https://imgur.com/iPavtfq.png)
 
 
-Assuming that the network topology of each cloud is similar to the below topology, then every Virtual Machine running on the first cloud can communicate with the VM's of the second cloud via the central VM which is using virtual switches with VXLAN tunnels. Only the central VM is connected to the outside world, as the yellow arrow indicates.
+Assuming that the network topology of each cloud is similar to the below topology, then every Virtual Machine (VM) running on the first cloud can communicate with the VM's of the second cloud via the central VM which is using virtual switches with VXLAN tunnels. Only the central VM is connected to the outside world, as the yellow arrow indicates. This VM plays the gateway role for the isolated networks machines.
 
 
 ![Imgur](https://imgur.com/xl3i9CF.png)
